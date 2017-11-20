@@ -76,8 +76,20 @@
                 android:background="@color/colorPrimary"
                 android:text="SIGN IN"
                 android:textColor="@color/cardview_light_background"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+
+                />
+
+            <Button
+                android:id="@+id/signUpButtonLogin"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:background="@color/colorPrimary"
+                android:text="sign up"
+                android:textColor="@color/cardview_light_background" />
 
         </LinearLayout>
+
     </ScrollView>
 </LinearLayout>

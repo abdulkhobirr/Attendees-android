@@ -147,9 +147,9 @@ public class MainActivity extends AppCompatActivity
 
         itemList = new ArrayList<>();
         itemList.add(new listItem(lblKelas, lblPengabsen,R.mipmap.kelas));
-        itemList.add(new listItem("Abdul Obey", lblPengabsen, R.mipmap.kelas));
-        itemList.add(new listItem(lblKelas, lblPengabsen,R.mipmap.kelas ));
-        itemList.add(new listItem("Iqbal Zauqul", "Pak Asep", R.mipmap.kelas));
+        itemList.add(new listItem("Matematika", "Ria Gusmita", R.mipmap.kelas));
+        itemList.add(new listItem("Database", "Imam", R.mipmap.kelas));
+        itemList.add(new listItem("Fisika", "Asep", R.mipmap.kelas));
 
         adapter = new mainActivityAdapter(this, itemList);
 

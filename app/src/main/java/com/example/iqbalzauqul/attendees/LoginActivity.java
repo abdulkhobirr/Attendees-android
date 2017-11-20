@@ -27,6 +27,7 @@ public class LoginActivity extends AppCompatActivity {
     private EditText emailField;
     private EditText passwordField;
     private Button signInBtn;
+    private Button signUpBtn;
 
     //Deklarasi autentikasi firebase
     private FirebaseAuth mAuth;
@@ -41,6 +42,9 @@ public class LoginActivity extends AppCompatActivity {
         emailField = findViewById(R.id.email);
         passwordField = findViewById(R.id.password);
         signInBtn = findViewById(R.id.email_sign_in_button);
+        signUpBtn = findViewById(R.id.signUpButtonLogin);
+
+
 
 
         if (getIntent().hasExtra("logout")) {
@@ -67,6 +71,15 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View view) {
                 startSignIn();
 
+
+            }
+        });
+
+        signUpBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent2 = new Intent(LoginActivity.this, SignUp.class);
+                startActivity(intent2);
 
             }
         });

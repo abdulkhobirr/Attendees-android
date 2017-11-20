@@ -6,23 +6,22 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_camera"
-            android:icon="@drawable/ic_menu_camera"
+            android:icon="@mipmap/ic_kelasan"
             android:title="Kelas" />
         <item
             android:id="@+id/nav_gallery"
-            android:icon="@drawable/ic_menu_gallery"
+            android:icon="@mipmap/ic_peserta"
             android:title="Peserta" />
 
     </group>
 
-    <item android:title="Communicate">
+    <item android:title="-">
         <menu>
 
             <item
                 android:id="@+id/nav_send"
-                android:icon="@drawable/ic_menu_send"
-                android:title="Logout"
-                />
+                android:icon="@mipmap/log"
+                android:title="Logout" />
         </menu>
     </item>
 
