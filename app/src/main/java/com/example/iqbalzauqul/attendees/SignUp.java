@@ -1,10 +1,12 @@
 package com.example.iqbalzauqul.attendees;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -22,6 +24,7 @@ public class SignUp extends AppCompatActivity {
     EditText emailField;
     EditText passwordField;
     Button signUp;
+    ProgressDialog progressDialog;
 
     FirebaseAuth mAuth;
 
@@ -39,6 +42,7 @@ public class SignUp extends AppCompatActivity {
         passwordField = findViewById(R.id.password_txt);
 
         mAuth = FirebaseAuth.getInstance();
+        progressDialog = new ProgressDialog(this);
 
         signUp.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -52,6 +56,7 @@ public class SignUp extends AppCompatActivity {
 
     private void register() {
 
+
         String email = emailField.getText().toString();
         String password = passwordField.getText().toString();
 
@@ -61,10 +66,13 @@ public class SignUp extends AppCompatActivity {
 
 
         } else {
+            progressDialog.setMessage("Singning up...");
+            progressDialog.show();
 
             mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                 @Override
                 public void onComplete(@NonNull Task<AuthResult> task) {
+                    progressDialog.dismiss();
                     if (!task.isSuccessful()) {
 
                         Toast.makeText(SignUp.this, "Register gagal", Toast.LENGTH_LONG).show();
@@ -78,11 +86,25 @@ public class SignUp extends AppCompatActivity {
 
 
                 }
+
+
             });
 
         }
 
 
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()) {
+            // Respond to the action bar's Up/Home button
+            case android.R.id.home:
+                finish();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
 

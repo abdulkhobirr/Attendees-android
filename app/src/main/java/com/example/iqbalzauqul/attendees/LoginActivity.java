@@ -1,5 +1,6 @@
 package com.example.iqbalzauqul.attendees;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -9,8 +10,9 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
-
+import android.support.design.widget.Snackbar;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -23,12 +25,12 @@ import com.google.firebase.auth.FirebaseAuth;
 public class LoginActivity extends AppCompatActivity {
 
 
+    ProgressDialog progressDialog;
     //Deklarasi widget
     private EditText emailField;
     private EditText passwordField;
     private Button signInBtn;
     private Button signUpBtn;
-
     //Deklarasi autentikasi firebase
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthStateListener;
@@ -44,12 +46,14 @@ public class LoginActivity extends AppCompatActivity {
         signInBtn = findViewById(R.id.email_sign_in_button);
         signUpBtn = findViewById(R.id.signUpButtonLogin);
 
+        progressDialog = new ProgressDialog(this);
 
 
 
         if (getIntent().hasExtra("logout")) {
 
-            Toast.makeText(LoginActivity.this, "Anda telah logout.", Toast.LENGTH_LONG).show();
+            Toast.makeText(LoginActivity.this, "Anda telah logout.", Toast.LENGTH_SHORT).show();
+
 
         }
         mAuth = FirebaseAuth.getInstance();
@@ -59,6 +63,9 @@ public class LoginActivity extends AppCompatActivity {
                 if (firebaseAuth.getCurrentUser() != null) {
 
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                    if (getIntent().hasExtra("signup")) {
+                        intent.putExtra("signup", true);
+                    }
                     startActivity(intent);
 
                 }
@@ -89,20 +96,22 @@ public class LoginActivity extends AppCompatActivity {
 
     private void startSignIn() {
 
-
         String email = emailField.getText().toString();
         String password = passwordField.getText().toString();
 
         if (TextUtils.isEmpty(email) || TextUtils.isEmpty(password)) {
 
-            Toast.makeText(LoginActivity.this, "Harap isi email dan password", Toast.LENGTH_LONG).show();
+            Toast.makeText(LoginActivity.this, "Harap isi email dan password", Toast.LENGTH_SHORT).show();
 
 
         } else {
+            progressDialog.setMessage("Singing in..");
+            progressDialog.show();
 
             mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                 @Override
                 public void onComplete(@NonNull Task<AuthResult> task) {
+                    progressDialog.dismiss();
                     if (!task.isSuccessful()) {
 
                         Toast.makeText(LoginActivity.this, "Sign In gagal, harap cek email dan password", Toast.LENGTH_LONG).show();

@@ -17,9 +17,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Adapter;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,6 +35,7 @@ public class MainActivity extends AppCompatActivity
     GridLayoutManager gridLayoutManager;
     List<listItem> itemList;
     mainActivityAdapter adapter;
+    FirebaseUser user;
 
 
     // Method yang dipanggil saat membuka aplikasi
@@ -41,17 +44,18 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+
 //        setSupportActionBar(toolbar);
 
         //
-//        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-//        fab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
-//            }
-//        });
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, tambahKegiatanActivity.class);
+                startActivity(intent);
+            }
+        });
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -59,10 +63,31 @@ public class MainActivity extends AppCompatActivity
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
+        if (getIntent().hasExtra("signup")) {
+
+            Toast.makeText(MainActivity.this, "Sing-Up Success", Toast.LENGTH_LONG).show();
+        }
+
+
+        fetchUser();
 
         fetchRecycleView();
+    }
+
+    private void fetchUser() {
+
+        user = FirebaseAuth.getInstance().getCurrentUser();
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+        View navHeader = navigationView.getHeaderView(0);
+
+        TextView navUser = navHeader.findViewById(R.id.namaUserDrawer);
+        navUser.setText(user.getDisplayName());
+
+        TextView navEmail = navHeader.findViewById(R.id.emailUserDrawer);
+        navEmail.setText(user.getEmail());
+
+
     }
 
     @Override
@@ -135,7 +160,7 @@ public class MainActivity extends AppCompatActivity
 
         if (getIntent().hasExtra("lblKelas")) {
             lblKelas = getIntent().getStringExtra("lblKelas");
-            lblPengabsen = getIntent().getStringExtra("lblPengabse");
+            lblPengabsen = getIntent().getStringExtra("lblPengabsen");
 //            imgKelas.setImageResource(kelas);
 
         } else
