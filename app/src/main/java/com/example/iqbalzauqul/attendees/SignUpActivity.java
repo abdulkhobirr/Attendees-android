@@ -17,7 +17,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
-public class SignUp extends AppCompatActivity {
+public class SignUpActivity extends AppCompatActivity {
 
     EditText nama;
     EditText username;
@@ -62,7 +62,7 @@ public class SignUp extends AppCompatActivity {
 
         if (TextUtils.isEmpty(email) || TextUtils.isEmpty(password)) {
 
-            Toast.makeText(SignUp.this, "Harap isi email dan password", Toast.LENGTH_LONG).show();
+            Toast.makeText(SignUpActivity.this, "Harap isi email dan password", Toast.LENGTH_LONG).show();
 
 
         } else {
@@ -75,10 +75,10 @@ public class SignUp extends AppCompatActivity {
                     progressDialog.dismiss();
                     if (!task.isSuccessful()) {
 
-                        Toast.makeText(SignUp.this, "Register gagal, harap masukan password yang panjang", Toast.LENGTH_LONG).show();
+                        Toast.makeText(SignUpActivity.this, "Register gagal, harap masukan password yang panjang", Toast.LENGTH_LONG).show();
                     } else {
 
-                        Intent intent = new Intent(SignUp.this, LoginActivity.class);
+                        Intent intent = new Intent(SignUpActivity.this, LoginActivity.class);
                         intent.putExtra("signup", true);
                         startActivity(intent);
 

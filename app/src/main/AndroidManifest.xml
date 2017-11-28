@@ -34,7 +34,7 @@
             android:name=".MainActivity"
             android:label="Kelas" />
         <activity
-            android:name=".SignUp"
+            android:name=".SignUpActivity"
             android:label="Sign Up"
             android:parentActivityName=".LoginActivity" />
         <activity

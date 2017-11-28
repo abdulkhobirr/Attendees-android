@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="@dimen/fab_margin"
-    tools:context="com.example.iqbalzauqul.attendees.SignUp">
+    tools:context="com.example.iqbalzauqul.attendees.SignUpActivity">
 
     <EditText
         android:id="@+id/username_txt"
