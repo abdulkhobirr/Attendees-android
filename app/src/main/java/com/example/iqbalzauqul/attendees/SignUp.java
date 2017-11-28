@@ -75,7 +75,7 @@ public class SignUp extends AppCompatActivity {
                     progressDialog.dismiss();
                     if (!task.isSuccessful()) {
 
-                        Toast.makeText(SignUp.this, "Register gagal", Toast.LENGTH_LONG).show();
+                        Toast.makeText(SignUp.this, "Register gagal, harap masukan password yang panjang", Toast.LENGTH_LONG).show();
                     } else {
 
                         Intent intent = new Intent(SignUp.this, LoginActivity.class);
