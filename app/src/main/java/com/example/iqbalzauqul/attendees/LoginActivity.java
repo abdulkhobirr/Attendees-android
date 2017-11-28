@@ -22,7 +22,7 @@ import com.google.firebase.auth.FirebaseAuth;
  * Created by iqbalzauqul on 20/11/17.
  */
 
-public class LoginActivity extends AppCompatActivity {
+public class LoginActivity extends AppCompatActivity{
 
 
     ProgressDialog progressDialog;
@@ -31,6 +31,7 @@ public class LoginActivity extends AppCompatActivity {
     private EditText passwordField;
     private Button signInBtn;
     private Button signUpBtn;
+    private Button forgotButton;
     //Deklarasi autentikasi firebase
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthStateListener;
@@ -45,6 +46,7 @@ public class LoginActivity extends AppCompatActivity {
         passwordField = findViewById(R.id.password);
         signInBtn = findViewById(R.id.email_sign_in_button);
         signUpBtn = findViewById(R.id.signUpButtonLogin);
+        forgotButton = findViewById(R.id.lupaPasswordButton);
 
         progressDialog = new ProgressDialog(this);
 
@@ -91,6 +93,13 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
+        forgotButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(LoginActivity.this, ResetPasswordActivity.class));
+            }
+        });
+
 
     }
 
@@ -132,4 +141,10 @@ public class LoginActivity extends AppCompatActivity {
 
         mAuth.addAuthStateListener(mAuthStateListener);
     }
+
+    @Override
+    public void onBackPressed() {
+
+    }
 }
+

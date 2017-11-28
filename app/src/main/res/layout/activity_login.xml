@@ -57,7 +57,7 @@
                     android:id="@+id/password"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Password"
+                    android:hint="@string/prompt_password"
                     android:imeActionId="6"
                     android:imeActionLabel="@string/action_sign_in_short"
                     android:imeOptions="actionUnspecified"
@@ -74,7 +74,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:background="@color/colorPrimary"
-                android:text="SIGN IN"
+                android:text="@string/action_sign_in_short"
                 android:textColor="@color/cardview_light_background"
                 android:textStyle="bold"
 
@@ -86,8 +86,14 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:background="@color/colorPrimary"
-                android:text="sign up"
+                android:text="@string/action_sign_up"
                 android:textColor="@color/cardview_light_background" />
+
+            <Button
+                android:id="@+id/lupaPasswordButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/btn_reset_password" />
 
         </LinearLayout>
 
