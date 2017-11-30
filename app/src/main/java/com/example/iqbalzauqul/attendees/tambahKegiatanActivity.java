@@ -3,6 +3,7 @@ package com.example.iqbalzauqul.attendees;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
+import android.support.annotation.NonNull;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -16,6 +17,7 @@ import android.widget.Toast;
 
 import java.util.UUID;
 
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -81,8 +83,7 @@ public class tambahKegiatanActivity extends AppCompatActivity {
     }
 
     private void addKegiatan() {
-        progressDialog.setMessage("Menambah Pertemuan");
-        progressDialog.show();
+
 
         final String nama = namaKegiatanEditText.getText().toString().trim();
         final String desc = descKegiatanEditText.getText().toString().trim();
@@ -90,7 +91,8 @@ public class tambahKegiatanActivity extends AppCompatActivity {
 
 
         if (!TextUtils.isEmpty(nama) && !TextUtils.isEmpty(desc) && imageUri != null && !TextUtils.isEmpty(jmlP)) {
-
+            progressDialog.setMessage("Menambah Pertemuan");
+            progressDialog.show();
             String id = UUID.randomUUID().toString();
 
             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -99,9 +101,11 @@ public class tambahKegiatanActivity extends AppCompatActivity {
             final DatabaseReference kelasRef = database.getReference("kelas").push();
 
 
-            StorageReference filePath = storageReference.child("Kegiatan_Images").child(imageUri.getLastPathSegment());
+            StorageReference filePath = storageReference.child("Kegiatan_Images").child(id);
 
             filePath.putFile(imageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+
+
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
 
@@ -116,9 +120,20 @@ public class tambahKegiatanActivity extends AppCompatActivity {
                     finish();
 
 
+
                 }
 
-            });
+
+            })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            progressDialog.dismiss();
+                            Toast.makeText(tambahKegiatanActivity.this, "Terjadi Kesalahan", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+
+
 
         } else {
             Toast.makeText(tambahKegiatanActivity.this, "Harap Masukan Semua Field", Toast.LENGTH_SHORT).show();

@@ -72,7 +72,7 @@ public class LoginActivity extends AppCompatActivity{
             }
         };
 
-
+        //Method Sign-In
         signInBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -81,7 +81,7 @@ public class LoginActivity extends AppCompatActivity{
 
             }
         });
-
+        //Method sign-up
         signUpBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
