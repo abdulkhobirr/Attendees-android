@@ -1,9 +1,9 @@
 package com.example.iqbalzauqul.attendees;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -15,15 +15,19 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Adapter;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
 import java.util.List;
 
 //Activity utama
@@ -32,11 +36,12 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     RecyclerView recyclerView;
-    GridLayoutManager gridLayoutManager;
-    List<listItem> itemList;
-    mainActivityAdapter adapter;
-    FirebaseUser user;
 
+    List<Kelas> itemList;
+    FirebaseUser user;
+    String uid;
+    private DatabaseReference mDatabase;
+    private Query mQuery;
 
     // Method yang dipanggil saat membuka aplikasi
     @Override
@@ -62,6 +67,15 @@ public class MainActivity extends AppCompatActivity
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
+        fetchUser();
+
+        mDatabase = FirebaseDatabase.getInstance().getReference().child("kelas");
+        mQuery = mDatabase.orderByChild("uid").equalTo(uid);
+
+
+        recyclerView = findViewById(R.id.recycleViewKelas);
+        GridLayoutManager glm = new GridLayoutManager(this, 2);
+        recyclerView.setLayoutManager(glm);
 
         if (getIntent().hasExtra("signup")) {
 
@@ -69,14 +83,12 @@ public class MainActivity extends AppCompatActivity
         }
 
 
-        fetchUser();
-
-        fetchRecycleView();
     }
 
     private void fetchUser() {
 
         user = FirebaseAuth.getInstance().getCurrentUser();
+        uid = user.getUid();
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         View navHeader = navigationView.getHeaderView(0);
@@ -95,7 +107,11 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
+        } else {
+            finishAffinity();
+
         }
+
     }
 
     @Override
@@ -131,7 +147,6 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_gallery) {
 
 
-
         } else if (id == R.id.nav_send) {
             FirebaseAuth.getInstance().signOut();
             Intent intent = new Intent(MainActivity.this, LoginActivity.class);
@@ -145,43 +160,55 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
-    public void fetchRecycleView() {
-        String lblKelas;
-        String lblPengabsen;
-        ImageView imgKelas;
-        imgKelas = findViewById(R.id.imageID);
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        FirebaseRecyclerAdapter<Kelas, KelasViewHolder> firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<Kelas, KelasViewHolder>(
+                Kelas.class,
+                R.layout.row_kelas,
+                KelasViewHolder.class,
+                mQuery
+        ) {
+            @Override
+            protected void populateViewHolder(KelasViewHolder viewHolder, Kelas model, int position) {
+                viewHolder.setNama(model.getnama());
+                viewHolder.setDesc(model.getdesc());
+                viewHolder.setImage(getApplicationContext(), model.getimage());
+
+            }
+        };
+
+        recyclerView.setAdapter(firebaseRecyclerAdapter);
 
 
+    }
 
-        recyclerView = findViewById(R.id.recycleViewKelas);
-        gridLayoutManager = new GridLayoutManager(this, 2);
-        recyclerView.setLayoutManager(gridLayoutManager);
+    public static class KelasViewHolder extends RecyclerView.ViewHolder {
 
+        View mView;
 
-        if (getIntent().hasExtra("lblKelas")) {
-            lblKelas = getIntent().getStringExtra("lblKelas");
-            lblPengabsen = getIntent().getStringExtra("lblPengabsen");
-//            imgKelas.setImageResource(kelas);
+        public KelasViewHolder(View itemView) {
+            super(itemView);
 
-        } else
-        {
-            lblKelas = "Biologi";
-            lblPengabsen = "Obay Al-Farobi";
-
+            mView = itemView;
         }
 
-        itemList = new ArrayList<>();
-        itemList.add(new listItem(lblKelas, lblPengabsen,R.mipmap.kelas));
-        itemList.add(new listItem("Matematika", "Ria Gusmita", R.mipmap.kelas));
-        itemList.add(new listItem("Database", "Imam", R.mipmap.kelas));
-        itemList.add(new listItem("Fisika", "Asep", R.mipmap.kelas));
+        public void setNama(String nama) {
 
-        adapter = new mainActivityAdapter(this, itemList);
+            TextView namaKelas = mView.findViewById(R.id.lbl_kelasID);
+            namaKelas.setText(nama);
+        }
 
-        recyclerView.setAdapter(adapter);
+        public void setDesc(String desc) {
+            TextView descKelas = mView.findViewById(R.id.lbl_pengabsenID);
+            descKelas.setText(desc);
+        }
 
-
-
+        public void setImage(Context ctx, String image) {
+            ImageView imageKelas = mView.findViewById(R.id.imageID);
+            Picasso.with(ctx).load(image).into(imageKelas);
+        }
 
     }
 }

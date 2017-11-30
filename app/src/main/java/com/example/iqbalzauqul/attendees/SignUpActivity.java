@@ -13,6 +13,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
@@ -69,25 +70,31 @@ public class SignUpActivity extends AppCompatActivity {
             progressDialog.setMessage("Singning up...");
             progressDialog.show();
 
-            mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+
+            Task task = mAuth.createUserWithEmailAndPassword(email, password);
+            task.addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                 @Override
                 public void onComplete(@NonNull Task<AuthResult> task) {
                     progressDialog.dismiss();
-                    if (!task.isSuccessful()) {
-
-                        Toast.makeText(SignUpActivity.this, "Register gagal, harap masukan password yang panjang", Toast.LENGTH_LONG).show();
-                    } else {
-
+                    if (task.isSuccessful()) {
                         Intent intent = new Intent(SignUpActivity.this, LoginActivity.class);
                         intent.putExtra("signup", true);
                         startActivity(intent);
-
                     }
 
 
                 }
 
 
+
+            });
+            task.addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    progressDialog.dismiss();
+                    String error = e.getMessage();
+                    Toast.makeText(SignUpActivity.this, "Terjadi Kesalahan: " + error, Toast.LENGTH_LONG).show();
+                }
             });
 
         }

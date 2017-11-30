@@ -12,6 +12,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
@@ -115,16 +116,12 @@ public class LoginActivity extends AppCompatActivity{
             progressDialog.setMessage("Singing in..");
             progressDialog.show();
 
-            mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+            mAuth.signInWithEmailAndPassword(email, password).addOnFailureListener(new OnFailureListener() {
                 @Override
-                public void onComplete(@NonNull Task<AuthResult> task) {
+                public void onFailure(@NonNull Exception e) {
                     progressDialog.dismiss();
-                    if (!task.isSuccessful()) {
-
-                        Toast.makeText(LoginActivity.this, "Sign In gagal, harap cek email dan password", Toast.LENGTH_LONG).show();
-                    }
-
-
+                    String error = e.getMessage();
+                    Toast.makeText(LoginActivity.this, "Sign gagal : " + error, Toast.LENGTH_LONG).show();
                 }
             });
 

@@ -129,7 +129,7 @@ public class tambahKegiatanActivity extends AppCompatActivity {
                         @Override
                         public void onFailure(@NonNull Exception e) {
                             progressDialog.dismiss();
-                            Toast.makeText(tambahKegiatanActivity.this, "Terjadi Kesalahan", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(tambahKegiatanActivity.this, "Terjadi Kesalahan" + e, Toast.LENGTH_SHORT).show();
                         }
                     });
 
@@ -160,11 +160,11 @@ public class tambahKegiatanActivity extends AppCompatActivity {
         if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
             CropImage.ActivityResult result = CropImage.getActivityResult(data);
             if (resultCode == RESULT_OK) {
-                Uri resultUri = result.getUri();
-                kegiatanImageButton.setImageURI(resultUri);
+                imageUri = result.getUri();
+                kegiatanImageButton.setImageURI(imageUri);
             } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
                 Exception error = result.getError();
-                Toast.makeText(tambahKegiatanActivity.this, "Ada Kesalahan", Toast.LENGTH_SHORT).show();
+                Toast.makeText(tambahKegiatanActivity.this, "Ada Kesalahan :" + error, Toast.LENGTH_SHORT).show();
             }
         }
     }
