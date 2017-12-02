@@ -64,12 +64,16 @@ public class MainActivity extends AppCompatActivity
         });
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+
+
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
-        fetchUser();
 
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+        fetchUser();
         mDatabase = FirebaseDatabase.getInstance().getReference().child("kelas");
         mQuery = mDatabase.orderByChild("uid").equalTo(uid);
 
@@ -80,7 +84,7 @@ public class MainActivity extends AppCompatActivity
 
         if (getIntent().hasExtra("signup")) {
 
-            Toast.makeText(MainActivity.this, "Sing-Up Success", Toast.LENGTH_LONG).show();
+            Toast.makeText(MainActivity.this, "Sign-Up Success", Toast.LENGTH_LONG).show();
         }
 
 
