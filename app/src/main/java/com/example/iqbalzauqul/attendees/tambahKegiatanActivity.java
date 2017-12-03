@@ -103,7 +103,8 @@ public class tambahKegiatanActivity extends AppCompatActivity {
             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
             final String uid = user.getUid();
             database = FirebaseDatabase.getInstance();
-            final DatabaseReference kelasRef = database.getReference("kelas").push();
+            String kodeKelas = RandomStringUtils.randomAlphanumeric(4, 6);
+            final DatabaseReference kelasRef = database.getReference("kelas").child(kodeKelas);
 
 
             StorageReference filePath = storageReference.child("Kegiatan_Images").child(id);
@@ -120,8 +121,7 @@ public class tambahKegiatanActivity extends AppCompatActivity {
                     kelasRef.child("jmlPertemuan").setValue(jmlP);
                     kelasRef.child("uid").setValue(uid);
                     kelasRef.child("image").setValue(downloadUrl.toString());
-                    String kodeKelas = RandomStringUtils.randomAlphanumeric(4, 6);
-                    kelasRef.child("kodeEmpatDigit").setValue(kodeKelas);
+
 
                     progressDialog.dismiss();
                     finish();
