@@ -21,8 +21,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserInfo;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
@@ -71,6 +73,7 @@ public class MainActivity extends AppCompatActivity
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
+
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         fetchUser();
@@ -96,13 +99,24 @@ public class MainActivity extends AppCompatActivity
         uid = user.getUid();
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-        View navHeader = navigationView.getHeaderView(0);
+        final View navHeader = navigationView.getHeaderView(0);
 
-        TextView navUser = navHeader.findViewById(R.id.namaUserDrawer);
-        navUser.setText(user.getDisplayName());
+        final TextView navUser = navHeader.findViewById(R.id.namaUserDrawer);
 
-        TextView navEmail = navHeader.findViewById(R.id.emailUserDrawer);
-        navEmail.setText(user.getEmail());
+        user.reload().addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+
+
+                navUser.setText(user.getDisplayName());
+
+
+                TextView navEmail = navHeader.findViewById(R.id.emailUserDrawer);
+                navEmail.setText(user.getEmail());
+
+            }
+        });
+
 
 
     }

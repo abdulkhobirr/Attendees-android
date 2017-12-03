@@ -107,17 +107,19 @@ public class SignUpActivity extends AppCompatActivity {
                         UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
                                 .setDisplayName(nama).build();
 
-                        user.updateProfile(profileUpdates);
-                        user.updateProfile(profileUpdates)
-                                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<Void> task) {
-                                        if (!task.isSuccessful()) {
-                                            Toast.makeText(SignUpActivity.this, "Something's wrong, please try again.", Toast.LENGTH_LONG).show();
-                                            return;
+
+                        if (user != null) {
+                            user.updateProfile(profileUpdates)
+                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            if (!task.isSuccessful()) {
+                                                Toast.makeText(SignUpActivity.this, "Something's wrong, please try again.", Toast.LENGTH_LONG).show();
+
+                                            }
                                         }
-                                    }
-                                });
+                                    });
+                        }
                         String uid = user.getUid();
                         DatabaseReference userRef = databaseReference.child("users").child(uid);
                         userRef.child("username").setValue(username);
