@@ -29,6 +29,9 @@ import com.google.firebase.storage.UploadTask;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
+import org.apache.commons.lang3.RandomStringUtils;
+
+import java.util.concurrent.ThreadLocalRandom;
 
 import java.util.Random;
 
@@ -43,6 +46,8 @@ public class tambahKegiatanActivity extends AppCompatActivity {
     StorageReference storageReference;
     FirebaseDatabase database;
     ProgressDialog progressDialog;
+
+
     private Uri imageUri = null;
 
     @Override
@@ -115,6 +120,8 @@ public class tambahKegiatanActivity extends AppCompatActivity {
                     kelasRef.child("jmlPertemuan").setValue(jmlP);
                     kelasRef.child("uid").setValue(uid);
                     kelasRef.child("image").setValue(downloadUrl.toString());
+                    String kodeKelas = RandomStringUtils.randomAlphanumeric(4, 6);
+                    kelasRef.child("kodeEmpatDigit").setValue(kodeKelas);
 
                     progressDialog.dismiss();
                     finish();
