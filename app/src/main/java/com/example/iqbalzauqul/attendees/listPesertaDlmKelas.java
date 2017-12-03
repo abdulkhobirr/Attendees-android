@@ -8,10 +8,10 @@ public class listPesertaDlmKelas {
 
     private String lblnamaPeserta;
     private String lblNIM;
-    private int imgPeserta;
-    private int imgProgressKehadiran;
+    private String imgPeserta;
+    private String imgProgressKehadiran;
 
-    public listPesertaDlmKelas(String lblnamaPeserta, String lblNIM, int imgPeserta, int imgProgressKehadiran) {
+    public listPesertaDlmKelas(String lblnamaPeserta, String lblNIM, String imgPeserta, String imgProgressKehadiran) {
         this.lblnamaPeserta = lblnamaPeserta;
         this.lblNIM = lblNIM;
         this.imgPeserta = imgPeserta;
@@ -34,19 +34,19 @@ public class listPesertaDlmKelas {
         this.lblNIM = lblNIM;
     }
 
-    public int getImgPeserta() {
+    public String getImgPeserta() {
         return imgPeserta;
     }
 
-    public void setImgPeserta(int imgPeserta) {
+    public void setImgPeserta(String imgPeserta) {
         this.imgPeserta = imgPeserta;
     }
 
-    public int getImgProgressKehadiran() {
+    public String getImgProgressKehadiran() {
         return imgProgressKehadiran;
     }
 
-    public void setImgProgressKehadiran(int imgProgressKehadiran) {
+    public void setImgProgressKehadiran(String imgProgressKehadiran) {
         this.imgProgressKehadiran = imgProgressKehadiran;
     }
 }
