@@ -51,6 +51,25 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        fetchView();
+        fetchUser();
+        mDatabase = FirebaseDatabase.getInstance().getReference().child("kelas");
+        mQuery = mDatabase.orderByChild("uid").equalTo(uid);
+
+
+        recyclerView = findViewById(R.id.recycleViewKelas);
+        GridLayoutManager glm = new GridLayoutManager(this, 2);
+        recyclerView.setLayoutManager(glm);
+
+        if (getIntent().hasExtra("signup")) {
+
+            Toast.makeText(MainActivity.this, "Sign-Up Success", Toast.LENGTH_LONG).show();
+        }
+
+
+    }
+
+    private void fetchView() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 //        setSupportActionBar(toolbar);
@@ -76,21 +95,6 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-        fetchUser();
-        mDatabase = FirebaseDatabase.getInstance().getReference().child("kelas");
-        mQuery = mDatabase.orderByChild("uid").equalTo(uid);
-
-
-        recyclerView = findViewById(R.id.recycleViewKelas);
-        GridLayoutManager glm = new GridLayoutManager(this, 2);
-        recyclerView.setLayoutManager(glm);
-
-        if (getIntent().hasExtra("signup")) {
-
-            Toast.makeText(MainActivity.this, "Sign-Up Success", Toast.LENGTH_LONG).show();
-        }
-
-
     }
 
     private void fetchUser() {
@@ -190,12 +194,23 @@ public class MainActivity extends AppCompatActivity
                 mQuery
         ) {
             @Override
-            protected void populateViewHolder(KelasViewHolder viewHolder, Kelas model, int position) {
+            protected void populateViewHolder(final KelasViewHolder viewHolder, final Kelas model, int position) {
                 viewHolder.setNama(model.getnama());
                 viewHolder.setDesc(model.getdesc());
                 viewHolder.setImage(getApplicationContext(), model.getimage());
 
+                viewHolder.mView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(MainActivity.this, DetailActivity.class);
+                        intent.putExtra("nama", model.getnama());
+                        startActivity(intent);
+                    }
+                });
+
             }
+
+
         };
 
         recyclerView.setAdapter(firebaseRecyclerAdapter);

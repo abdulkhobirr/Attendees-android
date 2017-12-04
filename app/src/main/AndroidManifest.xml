@@ -28,7 +28,8 @@
         </activity>
         <activity
             android:name=".DetailActivity"
-            android:label="Peserta" />
+            android:label="Peserta"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".MainActivity"
             android:label="Kelas"
@@ -48,6 +49,10 @@
         <activity
             android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
             android:theme="@style/Base.Theme.AppCompat" />
+
+        <meta-data
+            android:name="preloaded_fonts"
+            android:resource="@array/preloaded_fonts" />
     </application>
 
 </manifest>

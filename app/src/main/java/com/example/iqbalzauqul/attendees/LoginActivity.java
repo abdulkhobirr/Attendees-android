@@ -125,6 +125,8 @@ public class LoginActivity extends AppCompatActivity{
                     progressDialog.dismiss();
                     String error = e.getMessage();
                     Toast.makeText(LoginActivity.this, "Sign gagal : " + error, Toast.LENGTH_LONG).show();
+
+
                 }
             });
 
@@ -139,6 +141,7 @@ public class LoginActivity extends AppCompatActivity{
 
         mAuth.addAuthStateListener(mAuthStateListener);
     }
+
 
     @Override
     public void onBackPressed() {
