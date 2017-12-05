@@ -6,12 +6,16 @@ import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 import android.support.v7.widget.Toolbar;
+
+import com.firebase.ui.database.FirebaseRecyclerAdapter;
 
 import static android.app.PendingIntent.getActivity;
 
@@ -25,8 +29,19 @@ public class DetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_detail);
+        fetchView();
+        fetchRecyclerView();
 
 
+    }
+
+    private void fetchRecyclerView() {
+        RecyclerView recyclerView = findViewById(R.id.recyclerViewPeserta);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(linearLayoutManager);
+    }
+
+    private void fetchView() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.anim_toolbar);
 
         setSupportActionBar(toolbar);
@@ -37,13 +52,12 @@ public class DetailActivity extends AppCompatActivity {
 
         AppBarLayout appBarLayout = findViewById(R.id.appbar);
         appBarExpanded = true;
-
         appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
             @Override
             public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
                 Log.v("offset", String.valueOf(verticalOffset));
                 //  Vertical offset == 0 indicates appBar is fully  expanded.
-                if (verticalOffset < (-500)) {
+                if (verticalOffset < (-200)) {
                     Log.v("offset", String.valueOf(verticalOffset));
                     appBarExpanded = false;
                     invalidateOptionsMenu();
@@ -53,12 +67,6 @@ public class DetailActivity extends AppCompatActivity {
                 }
             }
         });
-
-
-
-
-
-
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -75,7 +83,7 @@ public class DetailActivity extends AppCompatActivity {
             Log.v("size", String.valueOf(size));
             //collapsed
             collapsedMenu.add("Add")
-                    .setIcon(R.mipmap.ic_launcher_foreground)
+                    .setIcon(R.drawable.ic_add_white)
                     .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
         } else {
             //expanded
@@ -83,5 +91,20 @@ public class DetailActivity extends AppCompatActivity {
         return super.onPrepareOptionsMenu(collapsedMenu);
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+//        FirebaseRecyclerAdapter<PesertaList, PesertaViewHolder>
+    }
+
+    public static class PesertaViewHolder extends RecyclerView.ViewHolder {
+        View mView;
+
+        public PesertaViewHolder(View itemView) {
+            super(itemView);
+            mView = itemView;
+        }
+    }
 }
 
