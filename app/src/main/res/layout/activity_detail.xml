@@ -55,12 +55,26 @@
 
                 />
         </android.support.design.widget.CollapsingToolbarLayout>
+
     </android.support.design.widget.AppBarLayout>
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:paddingTop="50dp"
+        android:text="Peserta"
+        android:textAppearance="@style/TextAppearance.AppCompat.Small"
+        app:layout_anchor="@+id/collapsing_toolbar"
+        app:layout_anchorGravity="left|bottom" />
+
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerViewPeserta"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginTop="50dp"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
 

@@ -1,28 +1,34 @@
 package com.example.iqbalzauqul.attendees;
 
-import android.content.Intent;
-import android.os.Build;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
+import android.widget.TextView;
 import android.support.v7.widget.Toolbar;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 
 import static android.app.PendingIntent.getActivity;
 
 public class DetailActivity extends AppCompatActivity {
 
     Menu collapsedMenu;
+    //    private Query mQuery;
+    RecyclerView recyclerView;
     private boolean appBarExpanded;
+    private DatabaseReference mDatabaseReference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,15 +37,23 @@ public class DetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_detail);
         fetchView();
         fetchRecyclerView();
+        String key = getIntent().getStringExtra("key");
+        mDatabaseReference = FirebaseDatabase.getInstance().getReference().child("pesertaKelas").child(key);
+
 
 
     }
 
     private void fetchRecyclerView() {
-        RecyclerView recyclerView = findViewById(R.id.recyclerViewPeserta);
+        recyclerView = findViewById(R.id.recyclerViewPeserta);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(linearLayoutManager);
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(this, linearLayoutManager.getOrientation());
+        dividerItemDecoration.setDrawable(getDrawable(R.drawable.drawable_divider));
+        recyclerView.addItemDecoration(dividerItemDecoration);
+
     }
+
 
     private void fetchView() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.anim_toolbar);
@@ -95,7 +109,22 @@ public class DetailActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
 
-//        FirebaseRecyclerAdapter<PesertaList, PesertaViewHolder>
+        FirebaseRecyclerAdapter<PesertaList, PesertaViewHolder> firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<PesertaList, PesertaViewHolder>(
+                PesertaList.class,
+                R.layout.peserta_dalam_kelas_cardview,
+                PesertaViewHolder.class,
+                mDatabaseReference
+
+        ) {
+            @Override
+            protected void populateViewHolder(PesertaViewHolder viewHolder, PesertaList model, int position) {
+                viewHolder.setNomorIdentitas(model.getNomorIdentitas());
+                viewHolder.setNama(model.getNama());
+
+            }
+        };
+
+        recyclerView.setAdapter(firebaseRecyclerAdapter);
     }
 
     public static class PesertaViewHolder extends RecyclerView.ViewHolder {
@@ -104,6 +133,18 @@ public class DetailActivity extends AppCompatActivity {
         public PesertaViewHolder(View itemView) {
             super(itemView);
             mView = itemView;
+        }
+
+        private void setNomorIdentitas(String nomorIdentitas) {
+            TextView noIdPeserta = mView.findViewById(R.id.id_textview);
+            noIdPeserta.setText(nomorIdentitas);
+
+        }
+
+        private void setNama(String nama) {
+            TextView namaPeserta = mView.findViewById(R.id.nama_peserta_txt);
+            namaPeserta.setText(nama);
+
         }
     }
 }

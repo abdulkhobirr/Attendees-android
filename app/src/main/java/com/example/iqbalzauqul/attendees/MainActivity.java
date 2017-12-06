@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity
 
     RecyclerView recyclerView;
 
-    List<Kelas> itemList;
+
     FirebaseUser user;
     String uid;
     private DatabaseReference mDatabase;
@@ -195,6 +195,8 @@ public class MainActivity extends AppCompatActivity
         ) {
             @Override
             protected void populateViewHolder(final KelasViewHolder viewHolder, final Kelas model, int position) {
+                final String key = getRef(position).getKey();
+
                 viewHolder.setNama(model.getnama());
                 viewHolder.setDesc(model.getdesc());
                 viewHolder.setImage(getApplicationContext(), model.getimage());
@@ -204,6 +206,7 @@ public class MainActivity extends AppCompatActivity
                     public void onClick(View v) {
                         Intent intent = new Intent(MainActivity.this, DetailActivity.class);
                         intent.putExtra("nama", model.getnama());
+                        intent.putExtra("key", key);
                         startActivity(intent);
                     }
                 });

@@ -7,13 +7,13 @@ package com.example.iqbalzauqul.attendees;
 public class PesertaList {
 
     private String nama;
-    private String noID;
+    private String nomorIdentitas;
     private String avatar;
     private int progress;
 
-    public PesertaList(String nama, String noID, String avatar, int progress) {
+    public PesertaList(String nama, String nomorIdentitas, String avatar, int progress) {
         this.nama = nama;
-        this.noID = noID;
+        this.nomorIdentitas = nomorIdentitas;
         this.avatar = avatar;
         this.progress = progress;
     }
@@ -30,12 +30,12 @@ public class PesertaList {
         this.nama = nama;
     }
 
-    public String getNoID() {
-        return noID;
+    public String getNomorIdentitas() {
+        return nomorIdentitas;
     }
 
-    public void setNoID(String noID) {
-        this.noID = noID;
+    public void setNomorIdentitas(String nomorIdentitas) {
+        this.nomorIdentitas = nomorIdentitas;
     }
 
     public String getAvatar() {
