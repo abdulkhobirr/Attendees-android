@@ -81,7 +81,10 @@
 
                     <android.support.design.widget.TextInputLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        app:passwordToggleContentDescription="description"
+                        app:passwordToggleEnabled="true"
+                        app:passwordToggleTint="#d67601">
 
                         <EditText
                             android:id="@+id/password"
@@ -113,7 +116,7 @@
                     <Button
                         android:id="@+id/signUpButtonLogin"
                         android:layout_width="275dp"
-                        android:layout_height="wrap_content"
+                        android:layout_height="40dp"
                         android:layout_gravity="center"
                         android:layout_marginTop="16dp"
                         android:background="#d67601"
@@ -122,14 +125,15 @@
 
                     <Button
                         android:id="@+id/lupaPasswordButton"
-                        android:layout_width="275dp"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
+                        android:layout_width="match_parent"
+                        android:layout_height="30dp"
                         android:layout_marginBottom="15dp"
-                        android:layout_marginTop="16dp"
-                        android:background="#d67601"
-                        android:text="@string/btn_reset_password"
-                        android:textColor="@color/cardview_light_background" />
+                        android:layout_marginRight="7dp"
+                        android:layout_marginTop="5dp"
+                        android:background="@null"
+                        android:text="Lupa Password?"
+                        android:textAlignment="textEnd"
+                        android:textAllCaps="false" />
 
                 </LinearLayout>
 
