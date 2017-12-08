@@ -1,5 +1,6 @@
 package com.example.iqbalzauqul.attendees;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -14,6 +15,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.support.v7.widget.Toolbar;
 
@@ -21,6 +23,7 @@ import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
+import com.squareup.picasso.Picasso;
 
 import static android.app.PendingIntent.getActivity;
 
@@ -132,6 +135,7 @@ public class DetailActivity extends AppCompatActivity {
             protected void populateViewHolder(PesertaViewHolder viewHolder, PesertaList model, int position) {
                 viewHolder.setNomorIdentitas(model.getNomorIdentitas());
                 viewHolder.setNama(model.getNama());
+                viewHolder.setAvatar(getApplicationContext(), model.getAvatar());
 
             }
         };
@@ -157,6 +161,11 @@ public class DetailActivity extends AppCompatActivity {
             TextView namaPeserta = mView.findViewById(R.id.nama_peserta_txt);
             namaPeserta.setText(nama);
 
+        }
+
+        public void setAvatar(Context ctx, String avatar) {
+            ImageView imageAvatar = mView.findViewById(R.id.avatar_imageview);
+            Picasso.with(ctx).load(avatar).into(imageAvatar);
         }
     }
 }

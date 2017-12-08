@@ -70,22 +70,24 @@ public class TambahPesertaActivity extends AppCompatActivity {
 
     }
 
-    private void addPeserta(String nama, String id) {
+    private void addPeserta(final String nama, final String id) {
         final ProgressDialog progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("Menambah Pertemuan");
         progressDialog.show();
 
         String key = getIntent().getStringExtra("key");
 
-        DatabaseReference datRef = FirebaseDatabase.getInstance().getReference().child("pesertaKelas").child(key).push();
-        datRef.child("nama").setValue(nama);
-        datRef.child("nomorIdentitas").setValue(id);
+        final DatabaseReference datRef = FirebaseDatabase.getInstance().getReference().child("pesertaKelas").child(key).push();
+
         storageReference = FirebaseStorage.getInstance().getReference();
-        StorageReference filePath = storageReference.child("Avatar").child(id);
+        final StorageReference filePath = storageReference.child("Avatar").child(id);
         filePath.putFile(imageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                 Uri downloadUrl = taskSnapshot.getDownloadUrl();
+                datRef.child("nama").setValue(nama);
+                datRef.child("nomorIdentitas").setValue(id);
+                datRef.child("avatar").setValue(downloadUrl.toString());
                 progressDialog.dismiss();
                 finish();
             }
