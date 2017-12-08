@@ -1,9 +1,11 @@
 package com.example.iqbalzauqul.attendees;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -27,6 +29,7 @@ public class DetailActivity extends AppCompatActivity {
     Menu collapsedMenu;
     //    private Query mQuery;
     RecyclerView recyclerView;
+    String key;
     private boolean appBarExpanded;
     private DatabaseReference mDatabaseReference;
 
@@ -37,7 +40,7 @@ public class DetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_detail);
         fetchView();
         fetchRecyclerView();
-        String key = getIntent().getStringExtra("key");
+        key = getIntent().getStringExtra("key");
         mDatabaseReference = FirebaseDatabase.getInstance().getReference().child("pesertaKelas").child(key);
 
 
@@ -57,6 +60,15 @@ public class DetailActivity extends AppCompatActivity {
 
     private void fetchView() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.anim_toolbar);
+        FloatingActionButton fab = findViewById(R.id.fab_detail_activity);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(DetailActivity.this, TambahPesertaActivity.class);
+                intent.putExtra("key", key);
+                startActivity(intent);
+            }
+        });
 
         setSupportActionBar(toolbar);
         CollapsingToolbarLayout collapsingToolbar = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
