@@ -6,7 +6,9 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -33,6 +35,7 @@ public class DetailActivity extends AppCompatActivity {
     //    private Query mQuery;
     RecyclerView recyclerView;
     String key;
+    CoordinatorLayout coordinatorLayout;
     private boolean appBarExpanded;
     private DatabaseReference mDatabaseReference;
 
@@ -43,6 +46,12 @@ public class DetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_detail);
         fetchView();
         fetchRecyclerView();
+        if (getIntent().hasExtra("add")) {
+            Snackbar snackbar = Snackbar
+                    .make(coordinatorLayout, "Peserta berhasil ditambahkan.", Snackbar.LENGTH_LONG);
+
+            snackbar.show();
+        }
         key = getIntent().getStringExtra("key");
         mDatabaseReference = FirebaseDatabase.getInstance().getReference().child("pesertaKelas").child(key);
 

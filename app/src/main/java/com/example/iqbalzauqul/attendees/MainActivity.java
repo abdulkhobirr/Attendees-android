@@ -3,7 +3,9 @@ package com.example.iqbalzauqul.attendees;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -42,6 +44,7 @@ public class MainActivity extends AppCompatActivity
 
     FirebaseUser user;
     String uid;
+    CoordinatorLayout coordinatorLayout;
     private DatabaseReference mDatabase;
     private Query mQuery;
 
@@ -65,8 +68,11 @@ public class MainActivity extends AppCompatActivity
 
             Toast.makeText(MainActivity.this, "Sign-Up Success", Toast.LENGTH_LONG).show();
         }
+        coordinatorLayout = findViewById(R.id.coor_main);
+        Snackbar snackbar = Snackbar
+                .make(coordinatorLayout, "Halo,  " + user.getDisplayName(), Snackbar.LENGTH_LONG);
 
-
+        snackbar.show();
     }
 
     private void fetchView() {

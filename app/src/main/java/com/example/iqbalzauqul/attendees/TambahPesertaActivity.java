@@ -90,6 +90,8 @@ public class TambahPesertaActivity extends AppCompatActivity {
                 datRef.child("avatar").setValue(downloadUrl.toString());
                 progressDialog.dismiss();
                 finish();
+
+
             }
         })
                 .addOnFailureListener(new OnFailureListener() {
