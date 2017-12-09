@@ -1,5 +1,6 @@
 package com.example.iqbalzauqul.attendees;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -89,6 +90,11 @@ public class TambahPesertaActivity extends AppCompatActivity {
                 datRef.child("nomorIdentitas").setValue(id);
                 datRef.child("avatar").setValue(downloadUrl.toString());
                 progressDialog.dismiss();
+
+
+                Intent returnIntent = new Intent();
+                returnIntent.putExtra("result", true);
+                setResult(Activity.RESULT_OK, returnIntent);
                 finish();
 
 
@@ -130,5 +136,15 @@ public class TambahPesertaActivity extends AppCompatActivity {
                 Toast.makeText(TambahPesertaActivity.this, "Ada Kesalahan :" + error, Toast.LENGTH_SHORT).show();
             }
         }
+
+
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent returnIntent = new Intent();
+        setResult(Activity.RESULT_CANCELED, returnIntent);
+        finish();
+
     }
 }

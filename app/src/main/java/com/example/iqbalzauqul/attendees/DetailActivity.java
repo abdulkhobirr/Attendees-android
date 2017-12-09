@@ -1,6 +1,8 @@
 package com.example.iqbalzauqul.attendees;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -9,6 +11,7 @@ import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -46,12 +49,8 @@ public class DetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_detail);
         fetchView();
         fetchRecyclerView();
-        if (getIntent().hasExtra("add")) {
-            Snackbar snackbar = Snackbar
-                    .make(coordinatorLayout, "Peserta berhasil ditambahkan.", Snackbar.LENGTH_LONG);
+        coordinatorLayout = findViewById(R.id.coor_detail);
 
-            snackbar.show();
-        }
         key = getIntent().getStringExtra("key");
         mDatabaseReference = FirebaseDatabase.getInstance().getReference().child("pesertaKelas").child(key);
 
@@ -76,9 +75,7 @@ public class DetailActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(DetailActivity.this, TambahPesertaActivity.class);
-                intent.putExtra("key", key);
-                startActivity(intent);
+                fabClicked();
             }
         });
 
@@ -107,6 +104,36 @@ public class DetailActivity extends AppCompatActivity {
         });
     }
 
+    private void fabClicked() {
+
+        AlertDialog.Builder builder1 = new AlertDialog.Builder(DetailActivity.this);
+        builder1.setMessage("Bagikan kode ini ke peserta yang telah memiliki akun agar bisa mengikuti kelas anda: " + key +
+                "\n\nJika ada peserta yang belum memiliki akun, anda bisa menambah peserta secara manual.");
+        builder1.setCancelable(true);
+
+        builder1.setPositiveButton(
+                "TAMBAH MANUAL",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        Intent intent = new Intent(DetailActivity.this, TambahPesertaActivity.class);
+                        intent.putExtra("key", key);
+                        startActivityForResult(intent, 1);
+                    }
+                });
+
+        builder1.setNegativeButton(
+                "CANCEL",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                    }
+                });
+
+        AlertDialog alert11 = builder1.create();
+        alert11.show();
+//
+    }
+
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
         collapsedMenu = menu;
@@ -118,7 +145,7 @@ public class DetailActivity extends AppCompatActivity {
         if (collapsedMenu != null
                 && (!appBarExpanded)) {
             int size = collapsedMenu.size();
-            Log.v("size", String.valueOf(size));
+
             //collapsed
             collapsedMenu.add("Add")
                     .setIcon(R.drawable.ic_add_white)
@@ -152,6 +179,32 @@ public class DetailActivity extends AppCompatActivity {
         recyclerView.setAdapter(firebaseRecyclerAdapter);
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        if (item.getTitle() == "Add") {
+            fabClicked();
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == 1) {
+            if (resultCode == Activity.RESULT_OK) {
+                Snackbar snackbar = Snackbar
+                        .make(coordinatorLayout, "Peserta berhasil ditambahkan.", Snackbar.LENGTH_LONG);
+
+
+                snackbar.show();
+            }
+            if (resultCode == Activity.RESULT_CANCELED) {
+                //Write your code if there's no result
+            }
+        }
+
+    }
+
     public static class PesertaViewHolder extends RecyclerView.ViewHolder {
         View mView;
 
@@ -178,4 +231,5 @@ public class DetailActivity extends AppCompatActivity {
         }
     }
 }
+
 
