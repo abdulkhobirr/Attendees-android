@@ -54,7 +54,11 @@
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
 
-        <activity android:name=".TambahPesertaActivity"></activity>
+        <activity android:name=".TambahPesertaActivity" />
+        <activity
+            android:name=".PesertaActivity"
+            android:label="Kelas Peserta"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

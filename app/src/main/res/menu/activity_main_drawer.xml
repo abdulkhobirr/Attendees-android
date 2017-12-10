@@ -5,11 +5,11 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/nav_camera"
+            android:id="@+id/nav_pengabsen"
             android:icon="@mipmap/ic_kelasan"
-            android:title="Kelas" />
+            android:title="Pengabsen" />
         <item
-            android:id="@+id/nav_gallery"
+            android:id="@+id/nav_peserta"
             android:icon="@mipmap/ic_peserta"
             android:title="Peserta" />
 

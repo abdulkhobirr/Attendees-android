@@ -101,6 +101,8 @@ public class MainActivity extends AppCompatActivity
 
 
         NavigationView navigationView = findViewById(R.id.nav_view);
+        //Membold teks pada posisi activity di nav drawer
+        navigationView.setCheckedItem(R.id.nav_pengabsen);
         navigationView.setNavigationItemSelectedListener(this);
     }
 
@@ -172,9 +174,12 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
+        if (id == R.id.nav_pengabsen) {
+
             // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
+        } else if (id == R.id.nav_peserta) {
+            Intent intent = new Intent(MainActivity.this, PesertaActivity.class);
+            startActivity(intent);
 
 
         } else if (id == R.id.nav_send) {
@@ -182,6 +187,7 @@ public class MainActivity extends AppCompatActivity
             Intent intent = new Intent(MainActivity.this, LoginActivity.class);
             intent.putExtra("logout", true);
             startActivity(intent);
+            finish();
 
         }
 
@@ -193,6 +199,9 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onStart() {
         super.onStart();
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        //Membold teks pada posisi activity di nav drawer
+        navigationView.setCheckedItem(R.id.nav_pengabsen);
 
         FirebaseRecyclerAdapter<Kelas, KelasViewHolder> firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<Kelas, KelasViewHolder>(
                 Kelas.class,
