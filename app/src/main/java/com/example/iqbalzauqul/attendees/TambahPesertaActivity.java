@@ -73,7 +73,7 @@ public class TambahPesertaActivity extends AppCompatActivity {
 
     private void addPeserta(final String nama, final String id) {
         final ProgressDialog progressDialog = new ProgressDialog(this);
-        progressDialog.setMessage("Menambah Pertemuan");
+        progressDialog.setMessage("Menambah Pesertax");
         progressDialog.show();
 
         String key = getIntent().getStringExtra("key");
