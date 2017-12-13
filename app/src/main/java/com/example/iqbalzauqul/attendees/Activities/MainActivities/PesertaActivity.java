@@ -1,4 +1,4 @@
-package com.example.iqbalzauqul.attendees;
+package com.example.iqbalzauqul.attendees.Activities.MainActivities;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -19,6 +19,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.iqbalzauqul.attendees.Activities.SignupOrLogin.LoginActivity;
+import com.example.iqbalzauqul.attendees.R;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;

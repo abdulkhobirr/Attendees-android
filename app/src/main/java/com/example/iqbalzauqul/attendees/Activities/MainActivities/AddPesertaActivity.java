@@ -1,20 +1,19 @@
-package com.example.iqbalzauqul.attendees;
+package com.example.iqbalzauqul.attendees.Activities.MainActivities;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import com.example.iqbalzauqul.attendees.R;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DatabaseReference;
@@ -25,7 +24,7 @@ import com.google.firebase.storage.UploadTask;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
-public class TambahPesertaActivity extends AppCompatActivity {
+public class AddPesertaActivity extends AppCompatActivity {
 
     private static final int GALLERY_REQUEST = 1;
     EditText namaField;
@@ -63,7 +62,7 @@ public class TambahPesertaActivity extends AppCompatActivity {
                 if (!nama.isEmpty() && !id.isEmpty() && imageUri != null) {
                     addPeserta(nama, id);
                 } else {
-                    Toast.makeText(TambahPesertaActivity.this, "Harap Masukan Semua Field", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(AddPesertaActivity.this, "Harap Masukan Semua Field", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -104,7 +103,7 @@ public class TambahPesertaActivity extends AppCompatActivity {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         progressDialog.dismiss();
-                        Toast.makeText(TambahPesertaActivity.this, "Terjadi Kesalahan" + e, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(AddPesertaActivity.this, "Terjadi Kesalahan" + e, Toast.LENGTH_SHORT).show();
                     }
                 });
 
@@ -133,7 +132,7 @@ public class TambahPesertaActivity extends AppCompatActivity {
                 imageButton.setImageURI(imageUri);
             } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
                 Exception error = result.getError();
-                Toast.makeText(TambahPesertaActivity.this, "Ada Kesalahan :" + error, Toast.LENGTH_SHORT).show();
+                Toast.makeText(AddPesertaActivity.this, "Ada Kesalahan :" + error, Toast.LENGTH_SHORT).show();
             }
         }
 

@@ -18,7 +18,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".LoginActivity"
+            android:name=".Activities.SignupOrLogin.LoginActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -27,25 +27,25 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".DetailActivity"
+            android:name=".Activities.MainActivities.DetailActivity"
             android:label="Peserta"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".MainActivity"
+            android:name=".Activities.MainActivities.MainActivity"
             android:label="Kelas"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".SignUpActivity"
+            android:name=".Activities.SignupOrLogin.SignUpActivity"
             android:label="Sign Up"
-            android:parentActivityName=".LoginActivity" />
+            android:parentActivityName=".Activities.SignupOrLogin.LoginActivity" />
         <activity
-            android:name=".ResetPasswordActivity"
+            android:name=".Activities.SignupOrLogin.ResetPasswordActivity"
             android:label="Reset Password"
-            android:parentActivityName=".LoginActivity" />
+            android:parentActivityName=".Activities.SignupOrLogin.LoginActivity" />
         <activity
-            android:name=".tambahKegiatanActivity"
+            android:name=".Activities.MainActivities.AddKegiatanActivity"
             android:label="Tambah Kegiatan"
-            android:parentActivityName=".MainActivity" />
+            android:parentActivityName=".Activities.MainActivities.MainActivity" />
         <activity
             android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
             android:theme="@style/Base.Theme.AppCompat" />
@@ -54,9 +54,9 @@
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
 
-        <activity android:name=".TambahPesertaActivity" />
+        <activity android:name=".Activities.MainActivities.AddPesertaActivity" />
         <activity
-            android:name=".PesertaActivity"
+            android:name=".Activities.MainActivities.PesertaActivity"
             android:label="Kelas Peserta"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
