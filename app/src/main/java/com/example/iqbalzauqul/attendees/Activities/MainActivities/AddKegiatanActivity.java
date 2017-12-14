@@ -1,10 +1,9 @@
-package com.example.iqbalzauqul.attendees;
+package com.example.iqbalzauqul.attendees.Activities.MainActivities;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.NonNull;
-import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -17,6 +16,7 @@ import android.widget.Toast;
 
 import java.util.UUID;
 
+import com.example.iqbalzauqul.attendees.R;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -31,11 +31,7 @@ import com.theartofdev.edmodo.cropper.CropImageView;
 
 import org.apache.commons.lang3.RandomStringUtils;
 
-import java.util.concurrent.ThreadLocalRandom;
-
-import java.util.Random;
-
-public class tambahKegiatanActivity extends AppCompatActivity {
+public class AddKegiatanActivity extends AppCompatActivity {
 
     private static final int GALLERY_REQUEST = 1;
     ImageButton kegiatanImageButton;
@@ -135,14 +131,14 @@ public class tambahKegiatanActivity extends AppCompatActivity {
                         @Override
                         public void onFailure(@NonNull Exception e) {
                             progressDialog.dismiss();
-                            Toast.makeText(tambahKegiatanActivity.this, "Terjadi Kesalahan" + e, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(AddKegiatanActivity.this, "Terjadi Kesalahan" + e, Toast.LENGTH_SHORT).show();
                         }
                     });
 
 
 
         } else {
-            Toast.makeText(tambahKegiatanActivity.this, "Harap Masukan Semua Field", Toast.LENGTH_SHORT).show();
+            Toast.makeText(AddKegiatanActivity.this, "Harap Masukan Semua Field", Toast.LENGTH_SHORT).show();
         }
 
     }
@@ -170,7 +166,7 @@ public class tambahKegiatanActivity extends AppCompatActivity {
                 kegiatanImageButton.setImageURI(imageUri);
             } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
                 Exception error = result.getError();
-                Toast.makeText(tambahKegiatanActivity.this, "Ada Kesalahan :" + error, Toast.LENGTH_SHORT).show();
+                Toast.makeText(AddKegiatanActivity.this, "Ada Kesalahan :" + error, Toast.LENGTH_SHORT).show();
             }
         }
     }

@@ -1,10 +1,9 @@
-package com.example.iqbalzauqul.attendees;
+package com.example.iqbalzauqul.attendees.Activities.MainActivities;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -25,10 +24,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.support.v7.widget.Toolbar;
 
+import com.example.iqbalzauqul.attendees.Models.PesertaList;
+import com.example.iqbalzauqul.attendees.R;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.squareup.picasso.Picasso;
 
 import static android.app.PendingIntent.getActivity;
@@ -117,7 +117,7 @@ public class DetailActivity extends AppCompatActivity {
                 "TAMBAH MANUAL",
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        Intent intent = new Intent(DetailActivity.this, TambahPesertaActivity.class);
+                        Intent intent = new Intent(DetailActivity.this, AddPesertaActivity.class);
                         intent.putExtra("key", key);
                         startActivityForResult(intent, 1);
                     }

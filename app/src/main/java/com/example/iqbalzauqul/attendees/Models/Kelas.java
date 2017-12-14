@@ -1,4 +1,4 @@
-package com.example.iqbalzauqul.attendees;
+package com.example.iqbalzauqul.attendees.Models;
 
 /**
  * Created by iqbalzauqul on 18/11/17.

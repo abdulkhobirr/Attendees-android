@@ -1,4 +1,4 @@
-package com.example.iqbalzauqul.attendees;
+package com.example.iqbalzauqul.attendees.Activities.SignupOrLogin;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.iqbalzauqul.attendees.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;

@@ -5,7 +5,7 @@
     android:id="@+id/coor_main2"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.iqbalzauqul.attendees.PesertaActivity">
+    tools:context="com.example.iqbalzauqul.attendees.Activities.MainActivities.PesertaActivity">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
@@ -28,7 +28,7 @@
         android:padding="16dp"
 
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        tools:context="com.example.iqbalzauqul.attendees.PesertaActivity">
+        tools:context="com.example.iqbalzauqul.attendees.Activities.MainActivities.PesertaActivity">
 
         <EditText
             android:id="@+id/kode_kelas_edt"

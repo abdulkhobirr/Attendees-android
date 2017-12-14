@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="false"
-    tools:context="com.example.iqbalzauqul.attendees.DetailActivity">
+    tools:context="com.example.iqbalzauqul.attendees.Activities.MainActivities.DetailActivity">
     <!-- Toolbar -->
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appbar"
