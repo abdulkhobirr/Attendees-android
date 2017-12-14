@@ -94,7 +94,6 @@ public class tambahKegiatanActivity extends AppCompatActivity {
         final String desc = descKegiatanEditText.getText().toString().trim();
         final String jmlP = jmlPertemuanEditText.getText().toString();
 
-
         if (!TextUtils.isEmpty(nama) && !TextUtils.isEmpty(desc) && imageUri != null && !TextUtils.isEmpty(jmlP)) {
             progressDialog.setMessage("Menambah Pertemuan");
             progressDialog.show();

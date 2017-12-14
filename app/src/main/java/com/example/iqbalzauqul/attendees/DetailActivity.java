@@ -16,6 +16,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -107,8 +108,9 @@ public class DetailActivity extends AppCompatActivity {
     private void fabClicked() {
 
         AlertDialog.Builder builder1 = new AlertDialog.Builder(DetailActivity.this);
-        builder1.setMessage("Bagikan kode ini ke peserta yang telah memiliki akun agar bisa mengikuti kelas anda: " + key +
-                "\n\nJika ada peserta yang belum memiliki akun, anda bisa menambah peserta secara manual.");
+        builder1.setMessage(Html.fromHtml("Bagikan kode ini ke peserta yang telah memiliki akun untuk mengikuti kelas anda: "
+                        +"<b>" + key + "</b>"+"<br/>"+"<br/>"+"<br/>"+
+                "Jika ada peserta yang belum memiliki akun, anda bisa menambah peserta secara manual."));
         builder1.setCancelable(true);
 
         builder1.setPositiveButton(

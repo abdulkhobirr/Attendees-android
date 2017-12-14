@@ -1,14 +1,19 @@
 package com.example.iqbalzauqul.attendees;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
+import android.view.ContextMenu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -25,12 +30,15 @@ import android.widget.Toast;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserInfo;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -41,8 +49,6 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     RecyclerView recyclerView;
-
-
     FirebaseUser user;
     String uid;
     CoordinatorLayout coordinatorLayout;
@@ -64,6 +70,8 @@ public class MainActivity extends AppCompatActivity
         recyclerView = findViewById(R.id.recycleViewKelas);
         GridLayoutManager glm = new GridLayoutManager(this, 2);
         recyclerView.setLayoutManager(glm);
+
+        registerForContextMenu( recyclerView );
 
         if (getIntent().hasExtra("signup")) {
 
@@ -203,19 +211,59 @@ public class MainActivity extends AppCompatActivity
         //Membold teks pada posisi activity di nav drawer
         navigationView.setCheckedItem(R.id.nav_pengabsen);
 
-        FirebaseRecyclerAdapter<Kelas, KelasViewHolder> firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<Kelas, KelasViewHolder>(
+        final FirebaseRecyclerAdapter<Kelas, KelasViewHolder> firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<Kelas, KelasViewHolder>(
                 Kelas.class,
                 R.layout.row_kelas,
                 KelasViewHolder.class,
                 mQuery
         ) {
             @Override
-            protected void populateViewHolder(final KelasViewHolder viewHolder, final Kelas model, int position) {
+            protected void populateViewHolder(final KelasViewHolder viewHolder, final Kelas model, final int position) {
                 final String key = getRef(position).getKey();
-
                 viewHolder.setNama(model.getnama());
                 viewHolder.setDesc(model.getdesc());
                 viewHolder.setImage(getApplicationContext(), model.getimage());
+                
+                viewHolder.mView.setOnLongClickListener(new View.OnLongClickListener(){
+                    @Override
+                    public boolean onLongClick(View v){
+                        final String link = model.getimage();
+                        AlertDialog.Builder builder1 = new AlertDialog.Builder(MainActivity.this);
+                        builder1.setMessage( Html.fromHtml("<b>" + "Hapus Kelas " +model.getnama()+"?"+"</b>"+"<br/>"+"<br/>"
+                                ));
+                        builder1.setCancelable(true);
+
+                        final AlertDialog.Builder builder = builder1.setPositiveButton(
+                                "YA",
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        DatabaseReference drKelas = FirebaseDatabase.getInstance().getReference("kelas").child( key );
+
+
+                                        FirebaseStorage mFirebaseStorage = FirebaseStorage.getInstance();
+                                        StorageReference photoRef = mFirebaseStorage.getReferenceFromUrl( link );
+
+                                        drKelas.removeValue();
+                                        photoRef.delete();
+                                        Toast.makeText( MainActivity.this, "Kelas Telah Dihapus", Toast.LENGTH_LONG ).show();
+                                        //TO DO CODE
+                                    }
+                                } );
+
+                        builder1.setNegativeButton(
+                                "TIDAK",
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        dialog.cancel();
+                                    }
+                                });
+
+                        AlertDialog alert11 = builder1.create();
+                        alert11.show();
+
+                        return true;
+                    }
+                });
 
                 viewHolder.mView.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -226,6 +274,8 @@ public class MainActivity extends AppCompatActivity
                         startActivity(intent);
                     }
                 });
+
+
 
             }
 
@@ -264,4 +314,5 @@ public class MainActivity extends AppCompatActivity
         }
 
     }
+
 }

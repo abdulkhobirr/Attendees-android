@@ -9,6 +9,7 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        multiDexEnabled true
     }
     buildTypes {
         release {
@@ -17,6 +18,7 @@ android {
         }
     }
 }
+
 
 
 
@@ -45,4 +47,6 @@ dependencies {
     implementation 'org.apache.commons:commons-lang3:3.7'
     compile 'com.android.support:design:26.1.0'
     compile 'de.hdodenhof:circleimageview:2.2.0'
+    compile 'com.google.firebase:firebase-auth:11.6.2'
+    compile 'com.google.android.gms:play-services-auth:11.6.2'
 }
