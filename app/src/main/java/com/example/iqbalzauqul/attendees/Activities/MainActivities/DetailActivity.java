@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
@@ -23,12 +24,19 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.support.v7.widget.Toolbar;
+import android.widget.Toast;
 
 import com.example.iqbalzauqul.attendees.Models.PesertaList;
 import com.example.iqbalzauqul.attendees.R;
+import com.firebase.client.Firebase;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Picasso;
 
 import static android.app.PendingIntent.getActivity;
@@ -170,10 +178,69 @@ public class DetailActivity extends AppCompatActivity {
 
         ) {
             @Override
-            protected void populateViewHolder(PesertaViewHolder viewHolder, PesertaList model, int position) {
+            protected void populateViewHolder(PesertaViewHolder viewHolder, final PesertaList model, int position) {
+                final String kode = getRef(position).getKey();
                 viewHolder.setNomorIdentitas(model.getNomorIdentitas());
                 viewHolder.setNama(model.getNama());
                 viewHolder.setAvatar(getApplicationContext(), model.getAvatar());
+
+                viewHolder.mView.setOnLongClickListener(new View.OnLongClickListener(){
+                    @Override
+                    public boolean onLongClick(View v){
+                        final String ava = model.getAvatar();
+                        AlertDialog.Builder builder1 = new AlertDialog.Builder(DetailActivity.this);
+                        builder1.setMessage( Html.fromHtml("<b>" + "Hapus Peserta : " +model.getNama()+"?"+"</b>"+"<br/>"+"<br/>"
+                        ));
+                        builder1.setCancelable(true);
+
+                        final AlertDialog.Builder builder = builder1.setPositiveButton(
+                                "YA",
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        DatabaseReference drPeserta = FirebaseDatabase.getInstance().getReference("pesertaKelas").child( key ).child( kode );
+
+
+
+
+                                        drPeserta.removeValue().addOnCompleteListener( new OnCompleteListener<Void>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<Void> task) {
+                                                //Cek apakah avatar null? (kasus join kelas via kode tanpa avatar)
+                                                if(model.getAvatar()!=null){
+                                                    FirebaseStorage mFirebaseStorage = FirebaseStorage.getInstance();
+                                                    StorageReference photoRef = mFirebaseStorage.getReferenceFromUrl( ava );
+                                                    photoRef.delete();
+                                                }
+
+
+                                                Toast.makeText( getApplicationContext(), model.getNama()+"  Telah Dihapus", Toast.LENGTH_LONG ).show();
+                                                //TO DO CODE
+                                            }
+                                        } ).addOnFailureListener( new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
+                                                Toast.makeText( getApplicationContext(), "GAGAL", Toast.LENGTH_LONG ).show();
+                                                //TO DO CODE
+                                            }
+                                        } );
+
+                                    }
+                                } );
+
+                        builder1.setNegativeButton(
+                                "TIDAK",
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        dialog.cancel();
+                                    }
+                                });
+
+                        AlertDialog alert11 = builder1.create();
+                        alert11.show();
+
+                        return true;
+                    }
+                });
 
             }
         };
