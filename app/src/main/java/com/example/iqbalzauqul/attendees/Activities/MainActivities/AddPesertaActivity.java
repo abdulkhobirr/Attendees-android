@@ -24,6 +24,9 @@ import com.google.firebase.storage.UploadTask;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+
 public class AddPesertaActivity extends AppCompatActivity {
 
     private static final int GALLERY_REQUEST = 1;
@@ -59,8 +62,12 @@ public class AddPesertaActivity extends AppCompatActivity {
 
                 String nama = namaField.getText().toString();
                 String id = IdField.getText().toString();
-                if (!nama.isEmpty() && !id.isEmpty() && imageUri != null) {
-                    addPeserta(nama, id);
+                if (!nama.isEmpty() && !id.isEmpty()) {
+                    try {
+                        addPeserta(nama, id);
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    }
                 } else {
                     Toast.makeText(AddPesertaActivity.this, "Harap Masukan Semua Field", Toast.LENGTH_SHORT).show();
                 }
@@ -70,7 +77,7 @@ public class AddPesertaActivity extends AppCompatActivity {
 
     }
 
-    private void addPeserta(final String nama, final String id) {
+    private void addPeserta(final String nama, final String id) throws FileNotFoundException {
         final ProgressDialog progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("Menambah Peserta");
         progressDialog.show();
@@ -81,32 +88,67 @@ public class AddPesertaActivity extends AppCompatActivity {
 
         storageReference = FirebaseStorage.getInstance().getReference();
         final StorageReference filePath = storageReference.child("Avatar").child(id);
-        filePath.putFile(imageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                Uri downloadUrl = taskSnapshot.getDownloadUrl();
-                datRef.child("nama").setValue(nama);
-                datRef.child("nomorIdentitas").setValue(id);
-                datRef.child("avatar").setValue(downloadUrl.toString());
-                datRef.child("progress").setValue(100);
-                progressDialog.dismiss();
+
+        if(imageUri !=null){
+            filePath.putFile(imageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    Uri downloadUrl = taskSnapshot.getDownloadUrl();
+                    datRef.child("nama").setValue(nama);
+                    datRef.child("nomorIdentitas").setValue(id);
+                    datRef.child("avatar").setValue(downloadUrl.toString());
+                    datRef.child("progress").setValue(100);
+                    progressDialog.dismiss();
 
 
-                Intent returnIntent = new Intent();
-                returnIntent.putExtra("result", true);
-                setResult(Activity.RESULT_OK, returnIntent);
-                finish();
+                    Intent returnIntent = new Intent();
+                    returnIntent.putExtra("result", true);
+                    setResult(Activity.RESULT_OK, returnIntent);
+                    finish();
 
 
-            }
-        })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        progressDialog.dismiss();
-                        Toast.makeText(AddPesertaActivity.this, "Terjadi Kesalahan" + e, Toast.LENGTH_SHORT).show();
-                    }
-                });
+                }
+            })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            progressDialog.dismiss();
+                            Toast.makeText(AddPesertaActivity.this, "Terjadi Kesalahan" + e, Toast.LENGTH_SHORT).show();
+                        }
+                    });
+        }else{
+            imageUri = Uri.parse("android.resource://com.example.iqbalzauqul.attendees/drawable/defaultava");
+            InputStream stream = getContentResolver().openInputStream(imageUri);
+
+            filePath.putFile(imageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    Uri downloadUrl = taskSnapshot.getDownloadUrl();
+                    datRef.child("nama").setValue(nama);
+                    datRef.child("nomorIdentitas").setValue(id);
+                    datRef.child("avatar").setValue(downloadUrl.toString());
+                    datRef.child("progress").setValue(100);
+                    progressDialog.dismiss();
+
+
+                    Intent returnIntent = new Intent();
+                    returnIntent.putExtra("result", true);
+                    setResult(Activity.RESULT_OK, returnIntent);
+                    finish();
+
+
+                }
+            })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            progressDialog.dismiss();
+                            Toast.makeText(AddPesertaActivity.this, "Terjadi Kesalahan" + e, Toast.LENGTH_SHORT).show();
+                        }
+                    });
+
+        }
+
 
 
     }

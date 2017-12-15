@@ -14,6 +14,7 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.view.ContextMenu;
+import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -24,6 +25,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -225,59 +227,63 @@ public class MainActivity extends AppCompatActivity
                 viewHolder.setNama(model.getnama());
                 viewHolder.setDesc(model.getdesc());
                 viewHolder.setImage(getApplicationContext(), model.getimage());
-                
+
                 viewHolder.mView.setOnLongClickListener(new View.OnLongClickListener(){
                     @Override
                     public boolean onLongClick(View v){
-                        final String link = model.getimage();
-                        AlertDialog.Builder builder1 = new AlertDialog.Builder(MainActivity.this);
-                        builder1.setMessage( Html.fromHtml("<b>" + "Hapus Kelas " +model.getnama()+"?"+"</b>"+"<br/>"+"<br/>"
-                                ));
+                        AlertDialog.Builder builder1 = new AlertDialog.Builder(MainActivity.this, R.style.MyAlertDialogStyle);
+                        LayoutInflater inflater = getLayoutInflater();
+                        final View dialogView = inflater.inflate(R.layout.kelas_dialog, null);
+                        builder1.setView(dialogView);
+
+                        final Button deleteBtn = dialogView.findViewById( R.id.buttonHapus );
+                        final Button cancelBtn = dialogView.findViewById( R.id.buttonCancel );
+
                         builder1.setCancelable(true);
+                        builder1.setTitle(model.getnama());
+                        final AlertDialog b = builder1.create();
+                        b.show();
 
-                        final AlertDialog.Builder builder = builder1.setPositiveButton(
-                                "YA",
-                                new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int id) {
-                                        DatabaseReference drKelas = FirebaseDatabase.getInstance().getReference("kelas").child( key );
-                                      final  DatabaseReference drPesertaKelas = FirebaseDatabase.getInstance().getReference("pesertaKelas").child( key );
+                        deleteBtn.setOnClickListener( new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                final String link = model.getimage();
+                                DatabaseReference drKelas = FirebaseDatabase.getInstance().getReference("kelas").child( key );
+                                final  DatabaseReference drPesertaKelas = FirebaseDatabase.getInstance().getReference("pesertaKelas").child( key );
 
 
-                                        FirebaseStorage mFirebaseStorage = FirebaseStorage.getInstance();
-                                       final StorageReference photoRef = mFirebaseStorage.getReferenceFromUrl( link );
+                                FirebaseStorage mFirebaseStorage = FirebaseStorage.getInstance();
+                                final StorageReference photoRef = mFirebaseStorage.getReferenceFromUrl( link );
 
-                                        drKelas.removeValue().addOnCompleteListener( new OnCompleteListener<Void>() {
-                                            @Override
-                                            public void onComplete(@NonNull Task<Void> task) {
-                                                drPesertaKelas.removeValue();
-                                                photoRef.delete();
-                                                Toast.makeText( getApplicationContext(), "Kelas Telah Dihapus", Toast.LENGTH_LONG ).show();
-                                                //TO DO CODE
-                                            }
-                                        } ).addOnFailureListener( new OnFailureListener() {
-                                            @Override
-                                            public void onFailure(@NonNull Exception e) {
-                                                Toast.makeText( getApplicationContext(), "GAGAL", Toast.LENGTH_LONG ).show();
-                                                //TO DO CODE
-                                            }
-                                        } );
-
+                                drKelas.removeValue().addOnCompleteListener( new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        drPesertaKelas.removeValue();
+                                        photoRef.delete();
+                                        b.cancel();
+                                        Toast.makeText( getApplicationContext(), "Kelas Telah Dihapus", Toast.LENGTH_LONG ).show();
+                                        //TO DO CODE
+                                    }
+                                } ).addOnFailureListener( new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        Toast.makeText( getApplicationContext(), "GAGAL", Toast.LENGTH_LONG ).show();
+                                        //TO DO CODE
                                     }
                                 } );
+                            }
+                        } );
 
-                        builder1.setNegativeButton(
-                                "TIDAK",
-                                new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int id) {
-                                        dialog.cancel();
-                                    }
-                                });
-
-                        AlertDialog alert11 = builder1.create();
-                        alert11.show();
+                        cancelBtn.setOnClickListener( new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                b.cancel();
+                            }
+                        } );
 
                         return true;
                     }
+
                 });
 
                 viewHolder.mView.setOnClickListener(new View.OnClickListener() {
@@ -285,6 +291,7 @@ public class MainActivity extends AppCompatActivity
                     public void onClick(View v) {
                         Intent intent = new Intent(MainActivity.this, DetailActivity.class);
                         intent.putExtra("nama", model.getnama());
+                        intent.putExtra( "kelasbg",model.getimage() );
                         intent.putExtra("key", key);
                         startActivity(intent);
                     }

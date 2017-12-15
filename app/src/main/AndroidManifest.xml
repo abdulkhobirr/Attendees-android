@@ -62,7 +62,8 @@
             android:name=".Activities.MainActivities.PesertaActivity"
             android:label="Kelas Peserta"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".Activities.MainActivities.updatePeserta"></activity>
+        <activity android:name=".Activities.MainActivities.updatePeserta"
+            android:label="Update Data Peserta"/>
     </application>
 
 </manifest>

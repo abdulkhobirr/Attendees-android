@@ -14,6 +14,8 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.UUID;
 
 import com.example.iqbalzauqul.attendees.R;
@@ -74,7 +76,11 @@ public class AddKegiatanActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                addKegiatan();
+                try {
+                    addKegiatan();
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
 
 
             }
@@ -83,64 +89,114 @@ public class AddKegiatanActivity extends AppCompatActivity {
 
     }
 
-    private void addKegiatan() {
+    private void addKegiatan() throws FileNotFoundException {
 
 
         final String nama = namaKegiatanEditText.getText().toString().trim();
         final String desc = descKegiatanEditText.getText().toString().trim();
         final String jmlP = jmlPertemuanEditText.getText().toString();
 
-        if (!TextUtils.isEmpty(nama) && !TextUtils.isEmpty(desc) && imageUri != null && !TextUtils.isEmpty(jmlP)) {
-            progressDialog.setMessage("Menambah Pertemuan");
-            progressDialog.show();
-            String id = UUID.randomUUID().toString();
+        if(imageUri!=null){
+            if (!TextUtils.isEmpty(nama) && !TextUtils.isEmpty(desc) && !TextUtils.isEmpty(jmlP)) {
+                progressDialog.setMessage("Menambah Pertemuan");
+                progressDialog.show();
+                String id = UUID.randomUUID().toString();
 
-            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-            final String uid = user.getUid();
-            database = FirebaseDatabase.getInstance();
-            String kodeKelas = RandomStringUtils.randomAlphanumeric(4, 6);
-            final DatabaseReference kelasRef = database.getReference("kelas").child(kodeKelas);
-
-
-            StorageReference filePath = storageReference.child("Kegiatan_Images").child(id);
-
-            filePath.putFile(imageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                final String uid = user.getUid();
+                database = FirebaseDatabase.getInstance();
+                String kodeKelas = RandomStringUtils.randomAlphanumeric(4, 6);
+                final DatabaseReference kelasRef = database.getReference("kelas").child(kodeKelas);
 
 
-                @Override
-                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                StorageReference filePath = storageReference.child("Kegiatan_Images").child(id);
 
-                    Uri downloadUrl = taskSnapshot.getDownloadUrl();
-                    kelasRef.child("nama").setValue(nama);
-                    kelasRef.child("desc").setValue(desc);
-                    kelasRef.child("jmlPertemuan").setValue(jmlP);
-                    kelasRef.child("uid").setValue(uid);
-                    kelasRef.child("image").setValue(downloadUrl.toString());
+                filePath.putFile(imageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
 
 
-                    progressDialog.dismiss();
-                    finish();
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+
+                        Uri downloadUrl = taskSnapshot.getDownloadUrl();
+                        kelasRef.child("nama").setValue(nama);
+                        kelasRef.child("desc").setValue(desc);
+                        kelasRef.child("jmlPertemuan").setValue(jmlP);
+                        kelasRef.child("uid").setValue(uid);
+                        kelasRef.child("image").setValue(downloadUrl.toString());
 
 
-
-                }
-
-
-            })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            progressDialog.dismiss();
-                            Toast.makeText(AddKegiatanActivity.this, "Terjadi Kesalahan" + e, Toast.LENGTH_SHORT).show();
-                        }
-                    });
+                        progressDialog.dismiss();
+                        finish();
 
 
 
-        } else {
-            Toast.makeText(AddKegiatanActivity.this, "Harap Masukan Semua Field", Toast.LENGTH_SHORT).show();
+                    }
+
+
+                })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                progressDialog.dismiss();
+                                Toast.makeText(AddKegiatanActivity.this, "Terjadi Kesalahan" + e, Toast.LENGTH_SHORT).show();
+                            }
+                        });
+
+
+
+            } else {
+                Toast.makeText(AddKegiatanActivity.this, "Harap Masukan Semua Field", Toast.LENGTH_SHORT).show();
+            }
+        }else{
+            imageUri = Uri.parse("android.resource://com.example.iqbalzauqul.attendees/drawable/header");
+            InputStream stream = getContentResolver().openInputStream(imageUri);
+
+            if (!TextUtils.isEmpty(nama) && !TextUtils.isEmpty(desc) && !TextUtils.isEmpty(jmlP)) {
+                progressDialog.setMessage("Menambah Pertemuan");
+                progressDialog.show();
+                String id = UUID.randomUUID().toString();
+
+                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                final String uid = user.getUid();
+                database = FirebaseDatabase.getInstance();
+                String kodeKelas = RandomStringUtils.randomAlphanumeric(4, 6);
+                final DatabaseReference kelasRef = database.getReference("kelas").child(kodeKelas);
+
+
+                StorageReference filePath = storageReference.child("Kegiatan_Images").child(id);
+
+                filePath.putFile(imageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+
+
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+
+                        Uri downloadUrl = taskSnapshot.getDownloadUrl();
+                        kelasRef.child("nama").setValue(nama);
+                        kelasRef.child("desc").setValue(desc);
+                        kelasRef.child("jmlPertemuan").setValue(jmlP);
+                        kelasRef.child("uid").setValue(uid);
+                        kelasRef.child("image").setValue(downloadUrl.toString());
+
+
+                        progressDialog.dismiss();
+                        finish();
+
+
+
+                    }
+
+
+                })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                progressDialog.dismiss();
+                                Toast.makeText(AddKegiatanActivity.this, "Terjadi Kesalahan" + e, Toast.LENGTH_SHORT).show();
+                            }
+                        });
+            }
         }
-
     }
 
 

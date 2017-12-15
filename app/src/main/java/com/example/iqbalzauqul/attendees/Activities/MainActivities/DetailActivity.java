@@ -57,18 +57,27 @@ public class DetailActivity extends AppCompatActivity {
     CoordinatorLayout coordinatorLayout;
     private boolean appBarExpanded;
     private DatabaseReference mDatabaseReference;
+    ImageView Header;
+    String kelasbg;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_detail);
+
         fetchView();
         fetchRecyclerView();
         coordinatorLayout = findViewById(R.id.coor_detail);
 
+        kelasbg = getIntent().getStringExtra( "kelasbg" );
         key = getIntent().getStringExtra("key");
         mDatabaseReference = FirebaseDatabase.getInstance().getReference().child("pesertaKelas").child(key);
+
+        Header = findViewById(R.id.header);
+        String urlFoto =  kelasbg;
+        Picasso.with(this).load(urlFoto).into(Header);
 
 
 
