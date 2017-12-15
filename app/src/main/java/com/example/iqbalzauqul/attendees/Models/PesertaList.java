@@ -1,8 +1,6 @@
 package com.example.iqbalzauqul.attendees.Models;
 
-/**
- * Created by iqbalzauqul on 05/12/17.
- */
+
 
 public class PesertaList {
 

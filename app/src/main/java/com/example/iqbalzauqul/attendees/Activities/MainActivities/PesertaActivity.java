@@ -1,5 +1,6 @@
 package com.example.iqbalzauqul.attendees.Activities.MainActivities;
 
+import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.design.widget.NavigationView;
@@ -41,9 +42,9 @@ public class PesertaActivity extends AppCompatActivity implements NavigationView
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_peserta);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar2);
+        Toolbar toolbar =  findViewById(R.id.toolbar2);
         setSupportActionBar(toolbar);
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout_peserta);
+        DrawerLayout drawer =  findViewById(R.id.drawer_layout_peserta);
         fetchUser();
         fetchView();
 
@@ -59,7 +60,7 @@ public class PesertaActivity extends AppCompatActivity implements NavigationView
 
     private void fetchView() {
         final EditText kodeKelas = findViewById(R.id.kode_kelas_edt);
-        Button join = (Button) findViewById(R.id.joinBtn);
+        Button join =  findViewById(R.id.joinBtn);
         join.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -162,7 +163,7 @@ public class PesertaActivity extends AppCompatActivity implements NavigationView
 
         }
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout_peserta);
+        DrawerLayout drawer =  findViewById(R.id.drawer_layout_peserta);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
@@ -189,10 +190,10 @@ public class PesertaActivity extends AppCompatActivity implements NavigationView
     public void showChangeLangDialog(final String kode) {
         final AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
         LayoutInflater inflater = this.getLayoutInflater();
-        final View dialogView = inflater.inflate(R.layout.custom_dialog, null);
+        @SuppressLint("InflateParams") final View dialogView = inflater.inflate(R.layout.custom_dialog,null);
         dialogBuilder.setView(dialogView);
 
-        final EditText edt = (EditText) dialogView.findViewById(R.id.edit1);
+        final EditText edt =  dialogView.findViewById(R.id.edit1);
 
         dialogBuilder.setTitle("Mengikuti Kelas");
         dialogBuilder.setMessage("Masukan Nomor Identitas");
@@ -204,6 +205,7 @@ public class PesertaActivity extends AppCompatActivity implements NavigationView
                         .push();
                 databaseReference.child("nama").setValue(nama);
                 databaseReference.child("nomorIdentitas").setValue(nim);
+                databaseReference.child("progress").setValue(100);
                 Toast.makeText(PesertaActivity.this, "Berhasil join kelas.", Toast.LENGTH_LONG).show();
                 dialog.cancel();
 
@@ -223,7 +225,7 @@ public class PesertaActivity extends AppCompatActivity implements NavigationView
 
         user = FirebaseAuth.getInstance().getCurrentUser();
 //        uid = user.getUid();
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view_peserta);
+        NavigationView navigationView =  findViewById(R.id.nav_view_peserta);
         navigationView.setNavigationItemSelectedListener(this);
         final View navHeader = navigationView.getHeaderView(0);
 

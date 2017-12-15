@@ -88,6 +88,7 @@ public class AddPesertaActivity extends AppCompatActivity {
                 datRef.child("nama").setValue(nama);
                 datRef.child("nomorIdentitas").setValue(id);
                 datRef.child("avatar").setValue(downloadUrl.toString());
+                datRef.child("progress").setValue(100);
                 progressDialog.dismiss();
 
 

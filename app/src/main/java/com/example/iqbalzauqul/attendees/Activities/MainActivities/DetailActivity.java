@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.PointF;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -29,6 +31,9 @@ import com.example.iqbalzauqul.attendees.R;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.hookedonplay.decoviewlib.DecoView;
+import com.hookedonplay.decoviewlib.charts.SeriesItem;
+import com.hookedonplay.decoviewlib.events.DecoEvent;
 import com.squareup.picasso.Picasso;
 
 import static android.app.PendingIntent.getActivity;
@@ -57,6 +62,7 @@ public class DetailActivity extends AppCompatActivity {
 
 
 
+
     }
 
     private void fetchRecyclerView() {
@@ -71,7 +77,7 @@ public class DetailActivity extends AppCompatActivity {
 
 
     private void fetchView() {
-        Toolbar toolbar = (Toolbar) findViewById(R.id.anim_toolbar);
+        Toolbar toolbar =  findViewById(R.id.anim_toolbar);
         FloatingActionButton fab = findViewById(R.id.fab_detail_activity);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -81,7 +87,7 @@ public class DetailActivity extends AppCompatActivity {
         });
 
         setSupportActionBar(toolbar);
-        CollapsingToolbarLayout collapsingToolbar = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
+        CollapsingToolbarLayout collapsingToolbar =  findViewById(R.id.collapsing_toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         String tes = getIntent().getStringExtra("nama");
         collapsingToolbar.setTitle(tes);
@@ -174,6 +180,9 @@ public class DetailActivity extends AppCompatActivity {
                 viewHolder.setNomorIdentitas(model.getNomorIdentitas());
                 viewHolder.setNama(model.getNama());
                 viewHolder.setAvatar(getApplicationContext(), model.getAvatar());
+                viewHolder.setPresentase(model.getProgress());
+
+
 
             }
         };
@@ -230,6 +239,65 @@ public class DetailActivity extends AppCompatActivity {
         public void setAvatar(Context ctx, String avatar) {
             ImageView imageAvatar = mView.findViewById(R.id.avatar_imageview);
             Picasso.with(ctx).load(avatar).into(imageAvatar);
+        }
+
+        private void setPresentase(int presentase) {
+            DecoView arcView = mView.findViewById(R.id.persenArc);
+//            arcView.disableHardwareAccelerationForDecoView();
+            String color;
+            //Mengeset color
+                if (presentase <= 45) {
+                     color = "#C2185B"; // merah
+                        } else if (presentase <= 75) {
+                               color = "#FFC107";// kuning
+                         } else {
+                                  color = "#4CAF50"; // hijau
+           }
+            // Create background track
+            arcView.addSeries(new SeriesItem.Builder(Color.argb(255, 218, 218, 218))
+                    .setRange(0, 100, 100)
+                    .setInitialVisibility(false)
+                    .build());
+
+            //Create data series track
+            final SeriesItem seriesItem1 = new SeriesItem.Builder(Color.argb(255, 255, 51, 51))
+                    .setRange(0, 100, 0)
+                    .setInitialVisibility(false)
+
+                    .build();
+
+            //Create Animation
+            int series1Index = arcView.addSeries(seriesItem1);
+            arcView.addEvent(new DecoEvent.Builder(DecoEvent.EventType.EVENT_SHOW, true)
+                    .setDelay(1000)
+                    .setDuration(2000)
+                    .build());
+            arcView.addEvent(new DecoEvent.Builder(presentase) // jumlah presentase
+                    .setIndex(series1Index)
+                    .setDelay(1000)
+                    .setColor(Color.parseColor(color)) //Animate Color
+                    .build());
+            //Set Text
+            final TextView presentaseText = mView.findViewById(R.id.presentaseText);
+            final String format = "%.0f%%";
+            seriesItem1.addArcSeriesItemListener(new SeriesItem.SeriesItemListener() {
+                @Override
+                public void onSeriesItemAnimationProgress(float percentComplete, float currentPosition) {
+                    if (format.contains("%%")) {
+                        float percentFilled = ((currentPosition - seriesItem1.getMinValue()) / (seriesItem1.getMaxValue() - seriesItem1.getMinValue()));
+                        presentaseText.setText(String.format(format, percentFilled * 100f));
+                    } else {
+                        presentaseText.setText(String.format(format, currentPosition));
+                    }
+                }
+
+                @Override
+                public void onSeriesItemDisplayProgress(float percentComplete) {
+
+                }
+            });
+
+
         }
     }
 }
