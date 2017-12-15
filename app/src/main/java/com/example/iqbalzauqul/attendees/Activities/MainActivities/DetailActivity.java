@@ -5,7 +5,10 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
@@ -15,6 +18,8 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.graphics.Palette;
+import android.support.v7.graphics.Target;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -59,26 +64,65 @@ public class DetailActivity extends AppCompatActivity {
     private DatabaseReference mDatabaseReference;
     ImageView Header;
     String kelasbg;
-
+    private com.squareup.picasso.Target loadtarget;
+    CollapsingToolbarLayout collapsingToolbar;
+    int m;
+    Bitmap mBit;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_detail);
-
-        fetchView();
-        fetchRecyclerView();
         coordinatorLayout = findViewById(R.id.coor_detail);
-
         kelasbg = getIntent().getStringExtra( "kelasbg" );
         key = getIntent().getStringExtra("key");
         mDatabaseReference = FirebaseDatabase.getInstance().getReference().child("pesertaKelas").child(key);
-
-        Header = findViewById(R.id.header);
+        ImageView Header = findViewById(R.id.header);
         String urlFoto =  kelasbg;
         Picasso.with(this).load(urlFoto).into(Header);
+        loadBitmap(urlFoto);
+        fetchView();
+        fetchRecyclerView();
 
+
+
+
+
+
+
+
+
+
+
+
+
+    }
+    public void loadBitmap(final String url) {
+
+        if (loadtarget == null) loadtarget = new com.squareup.picasso.Target() {
+            @Override
+            public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+
+
+                handleLoadedBitmap(bitmap);
+            }
+
+            @Override
+            public void onBitmapFailed(Drawable errorDrawable) {
+
+            }
+
+            @Override
+            public void onPrepareLoad(Drawable placeHolderDrawable) {
+
+            }
+        };
+
+        Picasso.with(this).load(url).into(loadtarget);
+    }
+
+    public void handleLoadedBitmap(Bitmap b) {
+        mBit = b;
 
 
     }
@@ -96,6 +140,7 @@ public class DetailActivity extends AppCompatActivity {
 
     private void fetchView() {
         Toolbar toolbar =  findViewById(R.id.anim_toolbar);
+
         FloatingActionButton fab = findViewById(R.id.fab_detail_activity);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -105,7 +150,14 @@ public class DetailActivity extends AppCompatActivity {
         });
 
         setSupportActionBar(toolbar);
-        CollapsingToolbarLayout collapsingToolbar =  findViewById(R.id.collapsing_toolbar);
+         collapsingToolbar =  findViewById(R.id.collapsing_toolbar);
+        Palette.from(mBit).generate(new Palette.PaletteAsyncListener() {
+            @Override
+            public void onGenerated(Palette palette) {
+               int mutedColor = palette.getMutedColor(R.attr.colorPrimary);
+                collapsingToolbar.setContentScrimColor(mutedColor);
+            }
+        });
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         String tes = getIntent().getStringExtra("nama");
         collapsingToolbar.setTitle(tes);

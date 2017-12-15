@@ -31,7 +31,7 @@
             android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity
             android:name=".Activities.MainActivities.DetailActivity"
-            android:label="Peserta"
+
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".Activities.MainActivities.MainActivity"
