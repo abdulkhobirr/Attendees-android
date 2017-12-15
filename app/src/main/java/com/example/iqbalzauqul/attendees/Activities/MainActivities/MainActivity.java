@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -31,6 +32,8 @@ import com.example.iqbalzauqul.attendees.Activities.SignupOrLogin.LoginActivity;
 import com.example.iqbalzauqul.attendees.Models.Kelas;
 import com.example.iqbalzauqul.attendees.R;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -237,15 +240,28 @@ public class MainActivity extends AppCompatActivity
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int id) {
                                         DatabaseReference drKelas = FirebaseDatabase.getInstance().getReference("kelas").child( key );
+                                      final  DatabaseReference drPesertaKelas = FirebaseDatabase.getInstance().getReference("pesertaKelas").child( key );
 
 
                                         FirebaseStorage mFirebaseStorage = FirebaseStorage.getInstance();
-                                        StorageReference photoRef = mFirebaseStorage.getReferenceFromUrl( link );
+                                       final StorageReference photoRef = mFirebaseStorage.getReferenceFromUrl( link );
 
-                                        drKelas.removeValue();
-                                        photoRef.delete();
-                                        Toast.makeText( MainActivity.this, "Kelas Telah Dihapus", Toast.LENGTH_LONG ).show();
-                                        //TO DO CODE
+                                        drKelas.removeValue().addOnCompleteListener( new OnCompleteListener<Void>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<Void> task) {
+                                                drPesertaKelas.removeValue();
+                                                photoRef.delete();
+                                                Toast.makeText( getApplicationContext(), "Kelas Telah Dihapus", Toast.LENGTH_LONG ).show();
+                                                //TO DO CODE
+                                            }
+                                        } ).addOnFailureListener( new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
+                                                Toast.makeText( getApplicationContext(), "GAGAL", Toast.LENGTH_LONG ).show();
+                                                //TO DO CODE
+                                            }
+                                        } );
+
                                     }
                                 } );
 
