@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.iqbalzauqul.attendees.Activities.MainActivities.AddKegiatanActivity">
+
+
+    <ImageButton
+        android:id="@+id/avatarButton"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="40dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/add" />
+
+    <EditText
+        android:id="@+id/namaKegiatan_Edt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:ems="10"
+        android:hint="Nama"
+        android:inputType="textCapWords" />
+
+    <EditText
+        android:id="@+id/updateID"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/namaKegiatan_Edt"
+        android:layout_below="@+id/namaKegiatan_Edt"
+        android:layout_marginTop="17dp"
+        android:ems="10"
+        android:hint="Nomor Identitas"
+        android:inputType="textMultiLine" />
+
+    <Button
+        android:id="@+id/tambahPertemuan_Btn"
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:background="@color/colorPrimary"
+
+        android:text="UPDATE"
+        android:textColor="@color/cardview_light_background" />
+
+</RelativeLayout>

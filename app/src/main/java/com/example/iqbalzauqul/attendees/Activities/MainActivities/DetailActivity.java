@@ -1,6 +1,7 @@
 package com.example.iqbalzauqul.attendees.Activities.MainActivities;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -19,9 +20,11 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.support.v7.widget.Toolbar;
@@ -183,6 +186,8 @@ public class DetailActivity extends AppCompatActivity {
         ) {
             @Override
             protected void populateViewHolder(PesertaViewHolder viewHolder, final PesertaList model, int position) {
+                final ProgressDialog progressDialog = new ProgressDialog(DetailActivity.this);
+                progressDialog.setMessage("Menghapus Peserta");
                 final String kode = getRef(position).getKey();
                 viewHolder.setNomorIdentitas(model.getNomorIdentitas());
                 viewHolder.setNama(model.getNama());
@@ -193,55 +198,74 @@ public class DetailActivity extends AppCompatActivity {
                     @Override
                     public boolean onLongClick(View v){
                         final String ava = model.getAvatar();
-                        AlertDialog.Builder builder1 = new AlertDialog.Builder(DetailActivity.this);
-                        builder1.setMessage( Html.fromHtml("<b>" + "Hapus Peserta : " +model.getNama()+"?"+"</b>"+"<br/>"+"<br/>"
-                        ));
+                        AlertDialog.Builder builder1 = new AlertDialog.Builder(DetailActivity.this, R.style.MyAlertDialogStyle);
+                        LayoutInflater inflater = getLayoutInflater();
+                        final View dialogView = inflater.inflate(R.layout.update_dialog, null);
+                        builder1.setView(dialogView);
+
+                        final Button deleteBtn = dialogView.findViewById( R.id.buttonDelete );
+                        final Button updateBtn = dialogView.findViewById( R.id.buttonUpdate );
+                        final Button cancelBtn = dialogView.findViewById( R.id.buttonCancel );
+
                         builder1.setCancelable(true);
+                        builder1.setTitle(model.getNama());
+                        final AlertDialog b = builder1.create();
+                        b.show();
 
-                        final AlertDialog.Builder builder = builder1.setPositiveButton(
-                                "YA",
-                                new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int id) {
-                                        DatabaseReference drPeserta = FirebaseDatabase.getInstance().getReference("pesertaKelas").child( key ).child( kode );
-
-
-
-
-                                        drPeserta.removeValue().addOnCompleteListener( new OnCompleteListener<Void>() {
-                                            @Override
-                                            public void onComplete(@NonNull Task<Void> task) {
-                                                //Cek apakah avatar null? (kasus join kelas via kode tanpa avatar)
-                                                if(model.getAvatar()!=null){
-                                                    FirebaseStorage mFirebaseStorage = FirebaseStorage.getInstance();
-                                                    StorageReference photoRef = mFirebaseStorage.getReferenceFromUrl( ava );
-                                                    photoRef.delete();
-                                                }
+                        deleteBtn.setOnClickListener( new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                progressDialog.show();
+                                DatabaseReference drPeserta = FirebaseDatabase.getInstance().getReference("pesertaKelas").child( key ).child( kode );
 
 
-                                                Toast.makeText( getApplicationContext(), model.getNama()+"  Telah Dihapus", Toast.LENGTH_LONG ).show();
-                                                //TO DO CODE
-                                            }
-                                        } ).addOnFailureListener( new OnFailureListener() {
-                                            @Override
-                                            public void onFailure(@NonNull Exception e) {
-                                                Toast.makeText( getApplicationContext(), "GAGAL", Toast.LENGTH_LONG ).show();
-                                                //TO DO CODE
-                                            }
-                                        } );
 
+
+                                drPeserta.removeValue().addOnCompleteListener( new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        //Cek apakah avatar null? (kasus join kelas via kode tanpa avatar)
+                                        if(model.getAvatar()!=null){
+                                            FirebaseStorage mFirebaseStorage = FirebaseStorage.getInstance();
+                                            StorageReference photoRef = mFirebaseStorage.getReferenceFromUrl( ava );
+                                            photoRef.delete();
+                                        }
+
+                                        b.cancel();
+                                        Toast.makeText( getApplicationContext(), model.getNama()+"  Telah Dihapus", Toast.LENGTH_LONG ).show();
+                                        progressDialog.dismiss();
+                                        //TO DO CODE
+                                    }
+                                } ).addOnFailureListener( new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        Toast.makeText( getApplicationContext(), "GAGAL", Toast.LENGTH_LONG ).show();
+                                        //TO DO CODE
                                     }
                                 } );
+                            }
+                        } );
 
-                        builder1.setNegativeButton(
-                                "TIDAK",
-                                new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int id) {
-                                        dialog.cancel();
-                                    }
-                                });
+                        updateBtn.setOnClickListener( new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                Intent intent = new Intent( DetailActivity.this, updatePeserta.class );
+                                intent.putExtra("key", key);
+                                intent.putExtra("kode", kode);
+                                intent.putExtra( "namaPlaceholder",model.getNama() );
+                                intent.putExtra( "IdPlaceholder", model.getNomorIdentitas() );
+                                intent.putExtra("avatar",model.getAvatar());
+                                b.cancel();
+                                startActivity( intent );
+                            }
+                        } );
 
-                        AlertDialog alert11 = builder1.create();
-                        alert11.show();
+                        cancelBtn.setOnClickListener( new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                b.cancel();
+                            }
+                        } );
 
                         return true;
                     }
@@ -363,6 +387,7 @@ public class DetailActivity extends AppCompatActivity {
 
         }
     }
+
 }
 
 

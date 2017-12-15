@@ -17,7 +17,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".SplashScreen"
+        <activity
+            android:name=".SplashScreen"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -27,9 +28,7 @@
         </activity>
         <activity
             android:name=".Activities.SignupOrLogin.LoginActivity"
-            android:theme="@style/AppTheme.NoActionBar">
-
-        </activity>
+            android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity
             android:name=".Activities.MainActivities.DetailActivity"
             android:label="Peserta"
@@ -63,7 +62,7 @@
             android:name=".Activities.MainActivities.PesertaActivity"
             android:label="Kelas Peserta"
             android:theme="@style/AppTheme.NoActionBar" />
-
+        <activity android:name=".Activities.MainActivities.updatePeserta"></activity>
     </application>
 
 </manifest>
