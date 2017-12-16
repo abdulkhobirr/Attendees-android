@@ -29,6 +29,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -66,6 +67,7 @@ public class DetailActivity extends AppCompatActivity {
     String kelasbg;
     private com.squareup.picasso.Target loadtarget;
     CollapsingToolbarLayout collapsingToolbar;
+    FloatingActionButton fabAbsen;
     int m;
     Bitmap mBit;
 
@@ -148,6 +150,9 @@ public class DetailActivity extends AppCompatActivity {
                 fabClicked();
             }
         });
+
+         fabAbsen = findViewById(R.id.fab_absen);
+
 
         setSupportActionBar(toolbar);
          collapsingToolbar =  findViewById(R.id.collapsing_toolbar);
@@ -336,6 +341,17 @@ public class DetailActivity extends AppCompatActivity {
         };
 
         recyclerView.setAdapter(firebaseRecyclerAdapter);
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                if (dy > 0 && fabAbsen.getVisibility() == View.VISIBLE) {
+                    fabAbsen.hide();
+                } else if (dy < 0 && fabAbsen.getVisibility() != View.VISIBLE) {
+                    fabAbsen.show();
+                }
+            }
+        });
     }
 
     @Override
@@ -351,11 +367,7 @@ public class DetailActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == 1) {
             if (resultCode == Activity.RESULT_OK) {
-                Snackbar snackbar = Snackbar
-                        .make(coordinatorLayout, "Peserta berhasil ditambahkan.", Snackbar.LENGTH_LONG);
-
-
-                snackbar.show();
+                Toast.makeText(this,"Berhasil ditambahkan.",Toast.LENGTH_LONG).show();
             }
             if (resultCode == Activity.RESULT_CANCELED) {
                 //Write your code if there's no result

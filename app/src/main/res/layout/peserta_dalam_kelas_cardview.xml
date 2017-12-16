@@ -14,8 +14,8 @@
 
 
         android:id="@+id/avatar_imageview"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
         android:layout_marginLeft="16dp"
@@ -44,13 +44,14 @@
                 android:layout_height="wrap_content"
                 android:text="Iqbal Zauqul Adib"
                 android:textAppearance="@style/TextAppearance.AppCompat"
-                android:textSize="16sp" />
+                android:textSize="13sp" />
 
             <TextView
                 android:id="@+id/id_textview"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="11160910000097"
+                android:textSize="10sp"
                 android:textAppearance="@style/TextAppearance.AppCompat.Small" />
 
     </LinearLayout>
@@ -66,9 +67,9 @@
 
     >
     <com.hookedonplay.decoviewlib.DecoView
-        android:layout_width="60dp"
+        android:layout_width="45dp"
         app:dv_lineWidth="5dp"
-        android:layout_height="60dp"
+        android:layout_height="45dp"
         android:id="@+id/persenArc"
         />
 
@@ -78,6 +79,7 @@
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
         android:layout_gravity="center"
+        android:textSize="8sp"
         android:text="0%"
         android:id="@+id/presentaseText"/>
 </RelativeLayout>
