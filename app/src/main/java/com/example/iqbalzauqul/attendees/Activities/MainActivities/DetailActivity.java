@@ -147,11 +147,18 @@ public class DetailActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                fabClicked();
+
+
             }
         });
 
          fabAbsen = findViewById(R.id.fab_absen);
+         fabAbsen.setOnClickListener(new View.OnClickListener() {
+             @Override
+             public void onClick(View v) {
+                 fabClicked();
+             }
+         });
 
 
         setSupportActionBar(toolbar);
@@ -231,7 +238,7 @@ public class DetailActivity extends AppCompatActivity {
 
             //collapsed
             collapsedMenu.add("Add")
-                    .setIcon(R.drawable.ic_add_white)
+                    .setIcon(R.drawable.ic_create_black_24dp)
                     .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
         } else {
             //expanded
