@@ -236,9 +236,11 @@ public class MainActivity extends AppCompatActivity
                         final View dialogView = inflater.inflate(R.layout.kelas_dialog, null);
                         builder1.setView(dialogView);
 
-                        final Button deleteBtn = dialogView.findViewById( R.id.buttonHapus );
-                        final Button cancelBtn = dialogView.findViewById( R.id.buttonCancel );
+                        final Button updateBtn = dialogView.findViewById( R.id.buttonUpdateKelas );
+                        final Button deleteBtn = dialogView.findViewById( R.id.buttonHapusKelas );
+                        final Button cancelBtn = dialogView.findViewById( R.id.buttonCancelKelas );
 
+                        //builder1.setMessage( "jumlah pertemuan :" +model.getJmlPertemuan());
                         builder1.setCancelable(true);
                         builder1.setTitle(model.getnama());
                         final AlertDialog b = builder1.create();
@@ -271,6 +273,20 @@ public class MainActivity extends AppCompatActivity
                                         //TO DO CODE
                                     }
                                 } );
+                            }
+                        } );
+
+                        updateBtn.setOnClickListener( new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                Intent intent = new Intent( MainActivity.this, updateKelas.class );
+                                intent.putExtra("key", key);
+                                intent.putExtra( "jmlPertemuan",model.getJmlPertemuan() );
+                                intent.putExtra( "namaPlaceholder",model.getnama() );
+                                intent.putExtra( "descPlaceholder", model.getdesc() );
+                                intent.putExtra("imageKelas",model.getimage());
+                                b.cancel();
+                                startActivity( intent );
                             }
                         } );
 

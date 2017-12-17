@@ -6,12 +6,14 @@ public class Kelas {
     private String nama;
     private String desc;
     private String image;
+    private String jmlPertemuan;
     private int persen;
 
-    public Kelas(String nama, String desc, String image, int persen) {
+    public Kelas(String nama, String desc, String image, String jmlPertemuan,int persen) {
         this.nama = nama;
         this.desc = desc;
         this.image = image;
+        this.jmlPertemuan = jmlPertemuan;
         this.persen = persen;
     }
 
@@ -42,6 +44,10 @@ public class Kelas {
 
     public String getimage() {
         return image;
+    }
+
+    public String getJmlPertemuan() {
+        return jmlPertemuan;
     }
 
     public int getPersen() { return  persen; }

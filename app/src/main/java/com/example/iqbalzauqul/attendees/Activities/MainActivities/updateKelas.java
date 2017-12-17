@@ -2,7 +2,6 @@ package com.example.iqbalzauqul.attendees.Activities.MainActivities;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.NonNull;
@@ -28,47 +27,54 @@ import com.squareup.picasso.Picasso;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
-public class updatePeserta extends AppCompatActivity {
+import java.util.UUID;
+
+public class updateKelas extends AppCompatActivity {
+
     private static final int GALLERY_REQUEST = 1;
-    ImageButton avatarBtn;
+    ImageButton kegiatanImgBtn;
     EditText namaEditText;
-    EditText IdEditText;
+    EditText descEditText;
+    EditText pertemuanEditText;
     Button updateBtn;
     StorageReference storageReference;
     FirebaseDatabase database;
     ProgressDialog progressDialog;
     String key;
-    String kode;
     String namaPlaceholder;
-    String IdPlaceholder;
-    String avatar;
+    String descPlaceholder;
+    String pertemuanPlaceholder;
+    String imgKelas;
 
 
-    private Uri imageUri;
+    private Uri imageUri=null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate( savedInstanceState );
-        setContentView( R.layout.activity_update_peserta );
+        setContentView( R.layout.activity_update_kelas );
         key = getIntent().getStringExtra("key");
-        kode = getIntent().getStringExtra("kode");
-        avatar = getIntent().getStringExtra( "avatar" );
+        imgKelas = getIntent().getStringExtra( "imageKelas" );
         namaPlaceholder = getIntent().getStringExtra("namaPlaceholder");
-        IdPlaceholder  = getIntent().getStringExtra( "IdPlaceholder" );
+        descPlaceholder  = getIntent().getStringExtra( "descPlaceholder" );
+        pertemuanPlaceholder = getIntent().getStringExtra( "jmlPertemuan" );
         progressDialog = new ProgressDialog(this);
         storageReference = FirebaseStorage.getInstance().getReference();
 
-        avatarBtn = findViewById(R.id.avatarButton);
+        kegiatanImgBtn = findViewById(R.id.kegiatan_imgBtn);
         namaEditText = findViewById(R.id.namaKegiatan_Edt);
-        IdEditText = findViewById(R.id.updateID);
-        updateBtn = findViewById(R.id.tambahPertemuan_Btn);
+        descEditText = findViewById(R.id.descKegiatan_Edt);
+        pertemuanEditText = findViewById( R.id.jumlahPertemuan_Edt );
+        updateBtn = findViewById(R.id.updateBtn);
 
         namaEditText.setText(namaPlaceholder);
-        IdEditText.setText( IdPlaceholder );
+        descEditText.setText( descPlaceholder );
+        pertemuanEditText.setText( pertemuanPlaceholder );
 
-        String urlFoto =  avatar;
-        Picasso.with(this).load(urlFoto).into(avatarBtn);
-        avatarBtn.setOnClickListener(new View.OnClickListener() {
+        String urlFoto =  imgKelas;
+        Picasso.with(this).load(urlFoto).into(kegiatanImgBtn);
+
+        kegiatanImgBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
@@ -82,23 +88,26 @@ public class updatePeserta extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                updatePeserta();
+                updateKelas();
 
 
             }
         });
     }
 
-    public void updatePeserta(){
+    public void updateKelas(){
         final ProgressDialog progressDialog = new ProgressDialog(this);
-        progressDialog.setMessage("Updating Peserta");
+        progressDialog.setMessage("Updating Kelas");
         progressDialog.show();
         final String nama = namaEditText.getText().toString().trim();
-        final String nomorIdentitas = IdEditText.getText().toString().trim();
+        final String desc = descEditText.getText().toString().trim();
+        final String jmlPertemuan = pertemuanEditText.getText().toString();
+
+        String id = UUID.randomUUID().toString();
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        final DatabaseReference pesertaRef = FirebaseDatabase.getInstance().getReference("pesertaKelas").child(key).child(kode);
-        final StorageReference filePath = storageReference.child("Avatar").child( nomorIdentitas );
+        final DatabaseReference kelasRef = FirebaseDatabase.getInstance().getReference("kelas").child(key);
+        final StorageReference filePath = storageReference.child("Kegiatan_Images").child( id );
 
         //final String finalNama = nama;
 
@@ -108,15 +117,18 @@ public class updatePeserta extends AppCompatActivity {
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                     Uri downloadUrl = taskSnapshot.getDownloadUrl();
                     if(nama!=null){
-                        pesertaRef.child("nama").setValue( nama );
+                        kelasRef.child("nama").setValue( nama );
                     }
-                    if(nomorIdentitas!=null){
-                        pesertaRef.child("nomorIdentitas").setValue(nomorIdentitas);
+                    if(desc!=null){
+                        kelasRef.child("desc").setValue(desc);
+                    }
+                    if(jmlPertemuan!=null){
+                        kelasRef.child( "jmlPertemuan" ).setValue( jmlPertemuan );
                     }
                     FirebaseStorage mFirebaseStorage = FirebaseStorage.getInstance();
-                    final StorageReference photoRef = mFirebaseStorage.getReferenceFromUrl( avatar );
+                    final StorageReference photoRef = mFirebaseStorage.getReferenceFromUrl( imgKelas );
                     photoRef.delete();
-                    pesertaRef.child("avatar").setValue(downloadUrl.toString());
+                    kelasRef.child("image").setValue(downloadUrl.toString());
                     progressDialog.dismiss();
 
                     Toast.makeText( getApplicationContext(),"Data Berhasil Di Update",Toast.LENGTH_SHORT ).show();
@@ -130,20 +142,22 @@ public class updatePeserta extends AppCompatActivity {
                 }
             } );
         }else{
-            progressDialog.show();
-                        if(nama!=null){
-                            pesertaRef.child("nama").setValue( nama );
-                        }
-                        if(nomorIdentitas!=null){
-                            pesertaRef.child("nomorIdentitas").setValue(nomorIdentitas);
-                        }
-                        progressDialog.dismiss();
-                        Toast.makeText( getApplicationContext(),"Data Berhasil Di Update",Toast.LENGTH_SHORT ).show();
+            if(nama!=null){
+                kelasRef.child("nama").setValue( nama );
+            }
+            if(desc!=null){
+                kelasRef.child("desc").setValue(desc);
+            }
+            if(jmlPertemuan!=null){
+                kelasRef.child( "jmlPertemuan" ).setValue( jmlPertemuan );
+            }
+            progressDialog.dismiss();
+            Toast.makeText( getApplicationContext(),"Data Berhasil Di Update",Toast.LENGTH_SHORT ).show();
 
-                        finish();
+            finish();
 
-                    }
-                }
+        }
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -154,30 +168,26 @@ public class updatePeserta extends AppCompatActivity {
             imageUri = data.getData();
             CropImage.activity(imageUri)
                     .setGuidelines( CropImageView.Guidelines.ON)
-                    .setAspectRatio(1, 1)
+                    .setAspectRatio(16, 9)
                     .start(this);
-
-
         }
 
         if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
             CropImage.ActivityResult result = CropImage.getActivityResult(data);
             if (resultCode == RESULT_OK) {
                 imageUri = result.getUri();
-                avatarBtn.setImageURI(imageUri);
+                kegiatanImgBtn.setImageURI(imageUri);
             } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
                 Exception error = result.getError();
                 Toast.makeText(getApplicationContext(), "Ada Kesalahan :" + error, Toast.LENGTH_SHORT).show();
             }
         }
-
-
     }
 
     @Override
     public void onBackPressed() {
         Intent returnIntent = new Intent();
-        setResult(Activity.RESULT_CANCELED, returnIntent);
+        setResult( Activity.RESULT_CANCELED, returnIntent);
         finish();
 
     }

@@ -28,10 +28,9 @@
         </activity>
         <activity
             android:name=".Activities.SignupOrLogin.LoginActivity"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".Activities.MainActivities.DetailActivity"
-
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".Activities.MainActivities.MainActivity"
@@ -62,8 +61,11 @@
             android:name=".Activities.MainActivities.PesertaActivity"
             android:label="Kelas Peserta"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".Activities.MainActivities.updatePeserta"
-            android:label="Update Data Peserta"/>
+        <activity
+            android:name=".Activities.MainActivities.updatePeserta"
+            android:label="Update Data Peserta" />
+        <activity android:name=".Activities.MainActivities.updateKelas"
+            android:label="Update Data Kelas"/>
     </application>
 
 </manifest>

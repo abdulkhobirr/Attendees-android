@@ -1,5 +1,6 @@
 package com.example.iqbalzauqul.attendees.Activities.MainActivities;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -266,7 +267,7 @@ public class DetailActivity extends AppCompatActivity {
                         final String ava = model.getAvatar();
                         AlertDialog.Builder builder1 = new AlertDialog.Builder(DetailActivity.this, R.style.MyAlertDialogStyle);
                         LayoutInflater inflater = getLayoutInflater();
-                        final View dialogView = inflater.inflate(R.layout.update_dialog, null);
+                        @SuppressLint("InflateParams") final View dialogView = inflater.inflate(R.layout.update_dialog, null);
                         builder1.setView(dialogView);
 
                         final Button deleteBtn = dialogView.findViewById( R.id.buttonDelete );

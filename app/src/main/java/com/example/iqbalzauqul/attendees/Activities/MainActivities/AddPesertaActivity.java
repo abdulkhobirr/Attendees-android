@@ -78,6 +78,18 @@ public class AddPesertaActivity extends AppCompatActivity {
     }
 
     private void addPeserta(final String nama, final String id) throws FileNotFoundException {
+        if(imageUri !=null){
+            addPesertaMethod( nama,id );
+
+        }else{
+            imageUri = Uri.parse("android.resource://com.example.iqbalzauqul.attendees/drawable/defaultava");
+            InputStream stream = getContentResolver().openInputStream(imageUri);
+
+            addPesertaMethod(nama,id );
+        }
+    }
+
+    private void addPesertaMethod(final String nama, final String id){
         final ProgressDialog progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("Menambah Peserta");
         progressDialog.show();
@@ -89,68 +101,32 @@ public class AddPesertaActivity extends AppCompatActivity {
         storageReference = FirebaseStorage.getInstance().getReference();
         final StorageReference filePath = storageReference.child("Avatar").child(id);
 
-        if(imageUri !=null){
-            filePath.putFile(imageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    Uri downloadUrl = taskSnapshot.getDownloadUrl();
-                    datRef.child("nama").setValue(nama);
-                    datRef.child("nomorIdentitas").setValue(id);
-                    datRef.child("avatar").setValue(downloadUrl.toString());
-                    datRef.child("progress").setValue(100);
-                    progressDialog.dismiss();
+        filePath.putFile(imageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                Uri downloadUrl = taskSnapshot.getDownloadUrl();
+                datRef.child("nama").setValue(nama);
+                datRef.child("nomorIdentitas").setValue(id);
+                datRef.child("avatar").setValue(downloadUrl.toString());
+                datRef.child("progress").setValue(100);
+                progressDialog.dismiss();
 
 
-                    Intent returnIntent = new Intent();
-                    returnIntent.putExtra("result", true);
-                    setResult(Activity.RESULT_OK, returnIntent);
-                    finish();
+                Intent returnIntent = new Intent();
+                returnIntent.putExtra("result", true);
+                setResult(Activity.RESULT_OK, returnIntent);
+                finish();
 
 
-                }
-            })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            progressDialog.dismiss();
-                            Toast.makeText(AddPesertaActivity.this, "Terjadi Kesalahan" + e, Toast.LENGTH_SHORT).show();
-                        }
-                    });
-        }else{
-            imageUri = Uri.parse("android.resource://com.example.iqbalzauqul.attendees/drawable/defaultava");
-            InputStream stream = getContentResolver().openInputStream(imageUri);
-
-            filePath.putFile(imageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    Uri downloadUrl = taskSnapshot.getDownloadUrl();
-                    datRef.child("nama").setValue(nama);
-                    datRef.child("nomorIdentitas").setValue(id);
-                    datRef.child("avatar").setValue(downloadUrl.toString());
-                    datRef.child("progress").setValue(100);
-                    progressDialog.dismiss();
-
-
-                    Intent returnIntent = new Intent();
-                    returnIntent.putExtra("result", true);
-                    setResult(Activity.RESULT_OK, returnIntent);
-                    finish();
-
-
-                }
-            })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            progressDialog.dismiss();
-                            Toast.makeText(AddPesertaActivity.this, "Terjadi Kesalahan" + e, Toast.LENGTH_SHORT).show();
-                        }
-                    });
-
-        }
-
-
-
+            }
+        })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        progressDialog.dismiss();
+                        Toast.makeText(AddPesertaActivity.this, "Terjadi Kesalahan" + e, Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 
     @Override
@@ -164,8 +140,6 @@ public class AddPesertaActivity extends AppCompatActivity {
                     .setGuidelines(CropImageView.Guidelines.ON)
                     .setAspectRatio(1, 1)
                     .start(this);
-
-
         }
 
         if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
@@ -178,8 +152,6 @@ public class AddPesertaActivity extends AppCompatActivity {
                 Toast.makeText(AddPesertaActivity.this, "Ada Kesalahan :" + error, Toast.LENGTH_SHORT).show();
             }
         }
-
-
     }
 
     @Override
@@ -187,6 +159,5 @@ public class AddPesertaActivity extends AppCompatActivity {
         Intent returnIntent = new Intent();
         setResult(Activity.RESULT_CANCELED, returnIntent);
         finish();
-
     }
 }
