@@ -104,6 +104,7 @@
         app:fabSize="normal"
         android:layout_gravity="bottom|end"
         app:elevation="16dp"
+        android:src="@android:drawable/ic_input_add"
 
         />
     <android.support.design.widget.FloatingActionButton
@@ -112,7 +113,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/fab_margin"
         android:clickable="true"
-        android:src="@android:drawable/ic_input_add"
+        android:src="@drawable/ic_create_black_24dp"
         android:tint="@color/cardview_light_background"
         app:backgroundTint="#279AF1"
         app:fabSize="normal"
