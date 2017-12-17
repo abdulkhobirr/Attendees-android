@@ -83,6 +83,7 @@
     android:layout_marginHorizontal="10dp"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
    app:cardElevation="8dp"
+    app:cardCornerRadius="8dp"
     >
 
 
@@ -101,7 +102,7 @@
         android:layout_margin="@dimen/fab_margin"
         android:clickable="true"
         android:tint="@color/cardview_light_background"
-        app:fabSize="normal"
+        app:fabSize="mini"
         android:layout_gravity="bottom|end"
         app:elevation="16dp"
         android:src="@android:drawable/ic_input_add"

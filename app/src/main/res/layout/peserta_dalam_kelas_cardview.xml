@@ -26,17 +26,18 @@
 
     <LinearLayout
         android:id="@+id/textview_container"
-        android:layout_width="200dp"
+        android:layout_width="180dp"
         android:layout_height="wrap_content"
         android:layout_alignWithParentIfMissing="true"
         android:layout_centerVertical="true"
         android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
+        android:layout_marginRight="11dp"
         android:layout_toRightOf="@+id/avatar_imageview"
         android:orientation="vertical"
         android:paddingBottom="20dp"
         android:paddingTop="20dp"
-        android:paddingEnd="80dp">
+        android:paddingEnd="80dp"
+        >
 
             <TextView
                 android:id="@+id/nama_peserta_txt"
@@ -44,7 +45,8 @@
                 android:layout_height="wrap_content"
                 android:text="Iqbal Zauqul Adib"
                 android:textAppearance="@style/TextAppearance.AppCompat"
-                android:textSize="13sp" />
+                android:textSize="13sp"
+                />
 
             <TextView
                 android:id="@+id/id_textview"
@@ -53,6 +55,47 @@
                 android:text="11160910000097"
                 android:textSize="10sp"
                 android:textAppearance="@style/TextAppearance.AppCompat.Small" />
+
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/toggleContainer"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="16dp"
+    android:layout_alignParentEnd="true"
+    android:layout_centerVertical="true"
+    android:layout_marginEnd="10dp"
+    android:visibility="gone"
+    >
+<ToggleButton
+    android:id="@+id/check_toggle"
+    android:layout_width="24dp"
+    android:layout_height="24dp"
+    android:background="@drawable/ic_check_toggle"
+    android:textOn=""
+    android:textOff=""
+    android:text=""
+    />
+        <ToggleButton
+            android:id="@+id/seru_toggle"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:background="@drawable/ic_seru_toggle"
+            android:textOn=""
+            android:textOff=""
+            android:text=""
+            android:layout_marginHorizontal="@dimen/fab_margin"
+            />
+        <ToggleButton
+            android:id="@+id/x_toggle"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:background="@drawable/ic_x_toggle"
+            android:textOn=""
+            android:textOff=""
+            android:text=""
+            />
+
 
     </LinearLayout>
 
@@ -64,6 +107,8 @@
     android:layout_alignParentEnd="true"
     android:layout_centerVertical="true"
     android:layout_marginEnd="16dp"
+    android:visibility="visible"
+    android:id="@+id/presentaseContainter"
 
     >
     <com.hookedonplay.decoviewlib.DecoView
@@ -71,7 +116,9 @@
         app:dv_lineWidth="5dp"
         android:layout_height="45dp"
         android:id="@+id/persenArc"
+
         />
+
 
     <TextView
         android:layout_width="wrap_content"

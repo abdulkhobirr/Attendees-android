@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -16,30 +15,32 @@ import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.graphics.Palette;
-import android.support.v7.graphics.Target;
+import android.support.v7.view.ActionMode;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.util.Log;
+
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.support.v7.widget.Toolbar;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import com.example.iqbalzauqul.attendees.Models.PesertaList;
 import com.example.iqbalzauqul.attendees.R;
-import com.firebase.client.Firebase;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -53,9 +54,15 @@ import com.hookedonplay.decoviewlib.charts.SeriesItem;
 import com.hookedonplay.decoviewlib.events.DecoEvent;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
+
 import static android.app.PendingIntent.getActivity;
 
 public class DetailActivity extends AppCompatActivity {
+
+    private boolean modeAbsen = false;
+    private ArrayList<Integer> selectedToggle = new ArrayList<Integer>();
+
 
     Menu collapsedMenu;
     //    private Query mQuery;
@@ -71,6 +78,7 @@ public class DetailActivity extends AppCompatActivity {
     FloatingActionButton fabAbsen;
     int m;
     Bitmap mBit;
+    CoordinatorLayout.LayoutParams paramsDef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -131,6 +139,7 @@ public class DetailActivity extends AppCompatActivity {
     }
 
     private void fetchRecyclerView() {
+
         recyclerView = findViewById(R.id.recyclerViewPeserta);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(linearLayoutManager);
@@ -148,8 +157,7 @@ public class DetailActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-
+                absenMode();
             }
         });
 
@@ -180,11 +188,12 @@ public class DetailActivity extends AppCompatActivity {
         appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
             @Override
             public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-                Log.v("offset", String.valueOf(verticalOffset));
+                //Log.v("offset", String.valueOf(verticalOffset));
                 //  Vertical offset == 0 indicates appBar is fully  expanded.
                 if (verticalOffset < (-200)) {
-                    Log.v("offset", String.valueOf(verticalOffset));
+//                    Log.v("offset", String.valueOf(verticalOffset));
                     appBarExpanded = false;
+
                     invalidateOptionsMenu();
                 } else {
                     appBarExpanded = true;
@@ -192,6 +201,25 @@ public class DetailActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    private void absenMode() {
+        RelativeLayout presentase = findViewById(R.id.presentaseContainter);
+        LinearLayout toggle = findViewById(R.id.toggleContainer);
+        toggle.setVisibility(View.VISIBLE);
+        (DetailActivity.this).startSupportActionMode(actionModeCallbacks);
+
+
+
+//                if (presentase.getVisibility() == View.VISIBLE) {
+//
+//                    presentase.setVisibility(View.GONE);
+//                    toggle.setVisibility(View.VISIBLE);
+//                }
+//                 else {
+//                    presentase.setVisibility(View.VISIBLE);
+//                    toggle.setVisibility(View.GONE);
+//                }
     }
 
     private void fabClicked() {
@@ -242,7 +270,7 @@ public class DetailActivity extends AppCompatActivity {
                     .setIcon(R.drawable.ic_create_black_24dp)
                     .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
         } else {
-            //expanded
+            //expandedm
         }
         return super.onPrepareOptionsMenu(collapsedMenu);
     }
@@ -259,7 +287,7 @@ public class DetailActivity extends AppCompatActivity {
 
         ) {
             @Override
-            protected void populateViewHolder(PesertaViewHolder viewHolder, final PesertaList model, int position) {
+            protected void populateViewHolder(final PesertaViewHolder viewHolder, final PesertaList model, int position) {
                 final ProgressDialog progressDialog = new ProgressDialog(DetailActivity.this);
                 progressDialog.setMessage("Menghapus Peserta");
                 final String kode = getRef(position).getKey();
@@ -268,6 +296,16 @@ public class DetailActivity extends AppCompatActivity {
                 viewHolder.setAvatar(getApplicationContext(), model.getAvatar());
                 viewHolder.setPresentase(model.getProgress());
 
+                if(modeAbsen) {
+                    viewHolder.setAbsenMode();
+
+
+
+
+
+                } else {
+                    viewHolder.removeAbsenMode();
+                }
                 viewHolder.mView.setOnLongClickListener(new View.OnLongClickListener(){
                     @Override
                     public boolean onLongClick(View v){
@@ -326,11 +364,11 @@ public class DetailActivity extends AppCompatActivity {
                                 Intent intent = new Intent( DetailActivity.this, updatePeserta.class );
                                 intent.putExtra("key", key);
                                 intent.putExtra("kode", kode);
-                                intent.putExtra( "namaPlaceholder",model.getNama() );
-                                intent.putExtra( "IdPlaceholder", model.getNomorIdentitas() );
+                                intent.putExtra( "namaPlaceholder",model.getNama());
+                                intent.putExtra( "IdPlaceholder", model.getNomorIdentitas());
                                 intent.putExtra("avatar",model.getAvatar());
                                 b.cancel();
-                                startActivity( intent );
+                                startActivity(intent);
                             }
                         } );
 
@@ -346,27 +384,72 @@ public class DetailActivity extends AppCompatActivity {
                 });
 
             }
+
+            @Override
+            public void onBindViewHolder(PesertaViewHolder viewHolder, int position) {
+                final ToggleButton check = viewHolder.mView.findViewById(R.id.check_toggle);
+               final  ToggleButton x = viewHolder.mView.findViewById(R.id.x_toggle);
+                final ToggleButton seru = viewHolder.mView.findViewById(R.id.seru_toggle);
+
+                check.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                        if (isChecked) {
+                            x.setChecked(false);
+                            seru.setChecked(false);
+                        }
+                    }
+                });
+                x.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                        if (isChecked) {
+                            check.setChecked(false);
+                            seru.setChecked(false);
+                        }
+
+                    }
+                });
+                seru.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                        if (isChecked) {
+                            x.setChecked(false);
+                            check.setChecked(false);
+                        }
+                    }
+                });
+
+
+
+                super.onBindViewHolder(viewHolder, position);
+            }
         };
 
         recyclerView.setAdapter(firebaseRecyclerAdapter);
-        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                if (dy > 0 && fabAbsen.getVisibility() == View.VISIBLE) {
-                    fabAbsen.hide();
-                } else if (dy < 0 && fabAbsen.getVisibility() != View.VISIBLE) {
-                    fabAbsen.show();
+
+            recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+                @Override
+                public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+
+                    super.onScrolled(recyclerView, dx, dy);
+                    if (!modeAbsen) {
+                        if (dy > 0 && fabAbsen.getVisibility() == View.VISIBLE) {
+                            fabAbsen.hide();
+                        } else if (dy < 0 && fabAbsen.getVisibility() != View.VISIBLE) {
+                            fabAbsen.show();
+                        }
+                    }
                 }
-            }
-        });
+            });
+
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
         if (item.getTitle() == "Add") {
-            fabClicked();
+            absenMode();
         }
         return super.onOptionsItemSelected(item);
     }
@@ -437,12 +520,13 @@ public class DetailActivity extends AppCompatActivity {
             //Create Animation
             int series1Index = arcView.addSeries(seriesItem1);
             arcView.addEvent(new DecoEvent.Builder(DecoEvent.EventType.EVENT_SHOW, true)
-                    .setDelay(1000)
-                    .setDuration(2000)
+
+                    .setDuration(200)
                     .build());
             arcView.addEvent(new DecoEvent.Builder(presentase) // jumlah presentase
                     .setIndex(series1Index)
-                    .setDelay(1000)
+                    .setDelay(100)
+                    .setDuration(2500)
                     .setColor(Color.parseColor(color)) //Animate Color
                     .build());
             //Set Text
@@ -467,7 +551,121 @@ public class DetailActivity extends AppCompatActivity {
 
 
         }
+
+        private void setAbsenMode() {
+            RelativeLayout presentaseRelative = mView.findViewById(R.id.presentaseContainter);
+            LinearLayout toggleContainer = mView.findViewById(R.id.toggleContainer);
+
+            presentaseRelative.setVisibility(View.GONE);
+            toggleContainer.setVisibility(View.VISIBLE);
+
+        }
+        private void removeAbsenMode() {
+            RelativeLayout presentaseRelative = mView.findViewById(R.id.presentaseContainter);
+            LinearLayout toggleContainer = mView.findViewById(R.id.toggleContainer);
+
+            presentaseRelative.setVisibility(View.VISIBLE);
+            toggleContainer.setVisibility(View.GONE);
+
+        }
+
+        private void setToggle() {
+            Log.v("set", "setToggleCalled");
+            ToggleButton check = mView.findViewById(R.id.check_toggle);
+            ToggleButton seru = mView.findViewById(R.id.seru_toggle);
+            ToggleButton x = mView.findViewById(R.id.x_toggle);
+
+            if (check.isChecked()) {
+                check.setChecked(true);
+                seru.setChecked(false);
+                x.setChecked(false);
+            } if (x.isChecked()) {
+                x.setChecked(true);
+                seru.setChecked(false);
+                check.setChecked(false);
+            } if (seru.isChecked()) {
+                seru.setChecked(true);
+                x.setChecked(false);
+                check.setChecked(false);
+            }
+
+
+        }
+
+//        private getToggle() {
+//
+//            ToggleButton check = mView.findViewById(R.id.check_toggle);
+//            ToggleButton seru = mView.findViewById(R.id.seru_toggle);
+//            ToggleButton x = mView.findViewById(R.id.x_toggle);
+//
+//            boolean checkState = check.isChecked();
+//            boolean seruState = seru.isChecked();
+//            boolean xState = x.isChecked();
+//            ArrayList<Boolean> state = new ArrayList<Boolean>();
+//            state.add(checkState);
+//            state.add(seruState);
+//            state.add(xState);
+//            return state;
+//
+//
+//
+//
+//
+//        }
+
+
+
+
     }
+
+
+    private ActionMode.Callback actionModeCallbacks = new ActionMode.Callback() {
+        @Override
+        public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+            modeAbsen = true;
+            menu.add("Absensi Dimulai");
+            fabAbsen.setVisibility(View.GONE);
+            AppBarLayout layout = findViewById(R.id.appbar);
+
+
+            paramsDef = (CoordinatorLayout.LayoutParams) layout.getLayoutParams();
+            Log.v("param", String.valueOf(paramsDef.height));
+            CoordinatorLayout.LayoutParams params = paramsDef;
+            params.height = 3*80; // COLLAPSED_HEIGHT
+            layout.setLayoutParams(params);
+            layout.setExpanded(false,true);
+            recyclerView.getAdapter().notifyDataSetChanged();
+
+            return true;
+
+        }
+
+        @Override
+        public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+
+            return false;
+
+        }
+
+        @Override
+        public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+            return false;
+
+        }
+
+        @Override
+        public void onDestroyActionMode(ActionMode mode) {
+
+            AppBarLayout layout = findViewById(R.id.appbar);
+            layout.setExpanded(true,true);
+            paramsDef.height = 512;
+            layout.setLayoutParams(paramsDef);
+            modeAbsen = false;
+            recyclerView.getAdapter().notifyDataSetChanged();
+
+
+        }
+    };
 
 }
 
