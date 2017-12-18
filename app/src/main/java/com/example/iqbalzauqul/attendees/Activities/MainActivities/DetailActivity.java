@@ -12,7 +12,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.CollapsingToolbarLayout;
+import net.opacapp.multilinecollapsingtoolbar.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
@@ -45,8 +45,11 @@ import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.hookedonplay.decoviewlib.DecoView;
@@ -62,6 +65,7 @@ public class DetailActivity extends AppCompatActivity {
 
     private boolean modeAbsen = false;
     private ArrayList<Integer> selectedToggle = new ArrayList<Integer>();
+    private ArrayList<String> pesertaArray = new ArrayList<String>();
 
 
     Menu collapsedMenu;
@@ -79,6 +83,10 @@ public class DetailActivity extends AppCompatActivity {
     int m;
     Bitmap mBit;
     CoordinatorLayout.LayoutParams paramsDef;
+    DatabaseReference refPertemuan;
+    int pertemuanKeInt;
+    String pertemuanKe;
+    String jmlPertemuan;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,11 +96,40 @@ public class DetailActivity extends AppCompatActivity {
         kelasbg = getIntent().getStringExtra( "kelasbg" );
         key = getIntent().getStringExtra("key");
         mDatabaseReference = FirebaseDatabase.getInstance().getReference().child("pesertaKelas").child(key);
+         refPertemuan = FirebaseDatabase.getInstance().getReference().child("kelas").
+                child(key).child("pertemuanKe");
+         refPertemuan.addValueEventListener(new ValueEventListener() {
+             @Override
+             public void onDataChange(DataSnapshot dataSnapshot) {
+                 pertemuanKe = dataSnapshot.getValue().toString();
+                 pertemuanKeInt = Integer.parseInt(pertemuanKe);
+
+             }
+
+             @Override
+             public void onCancelled(DatabaseError databaseError) {
+
+             }
+
+         });
+        refPertemuan.getParent().child("jmlPertemuan").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                jmlPertemuan = dataSnapshot.getValue().toString();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+
         ImageView Header = findViewById(R.id.header);
         String urlFoto =  kelasbg;
         Picasso.with(this).load(urlFoto).into(Header);
         loadBitmap(urlFoto);
-        fetchView();
+        fetchView(jmlPertemuan);
         fetchRecyclerView();
 
 
@@ -150,7 +187,7 @@ public class DetailActivity extends AppCompatActivity {
     }
 
 
-    private void fetchView() {
+    private void fetchView(String jmlPertemuan) {
         Toolbar toolbar =  findViewById(R.id.anim_toolbar);
 
         FloatingActionButton fab = findViewById(R.id.fab_detail_activity);
@@ -180,8 +217,10 @@ public class DetailActivity extends AppCompatActivity {
             }
         });
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        String tes = getIntent().getStringExtra("nama");
-        collapsingToolbar.setTitle(tes);
+        final String nama = getIntent().getStringExtra("nama");
+         String title = nama + "\n(" +pertemuanKeInt + "/" + jmlPertemuan +" Pertemuan)";
+        collapsingToolbar.setTitle(title);
+
 
         AppBarLayout appBarLayout = findViewById(R.id.appbar);
         appBarExpanded = true;
@@ -193,10 +232,13 @@ public class DetailActivity extends AppCompatActivity {
                 if (verticalOffset < (-200)) {
 //                    Log.v("offset", String.valueOf(verticalOffset));
                     appBarExpanded = false;
+                    collapsingToolbar.setTitle(nama);
 
                     invalidateOptionsMenu();
                 } else {
                     appBarExpanded = true;
+                    String titleUpdate = nama + "\n(" +pertemuanKeInt + "/20 Pertemuan)";
+                    collapsingToolbar.setTitle(titleUpdate);
                     invalidateOptionsMenu();
                 }
             }
@@ -295,6 +337,17 @@ public class DetailActivity extends AppCompatActivity {
                 viewHolder.setNama(model.getNama());
                 viewHolder.setAvatar(getApplicationContext(), model.getAvatar());
                 viewHolder.setPresentase(model.getProgress());
+                int i = recyclerView.getAdapter().getItemCount();
+                for (;selectedToggle.size() < i;) {
+                    selectedToggle.add(0);
+
+                    Log.v("toggle", String.valueOf(selectedToggle));
+
+                }
+                if (pesertaArray.size() < i) {
+                    pesertaArray.add(kode);
+                }
+
 
                 if(modeAbsen) {
                     viewHolder.setAbsenMode();
@@ -386,7 +439,7 @@ public class DetailActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onBindViewHolder(PesertaViewHolder viewHolder, int position) {
+            public void onBindViewHolder(PesertaViewHolder viewHolder, final int position) {
                 final ToggleButton check = viewHolder.mView.findViewById(R.id.check_toggle);
                final  ToggleButton x = viewHolder.mView.findViewById(R.id.x_toggle);
                 final ToggleButton seru = viewHolder.mView.findViewById(R.id.seru_toggle);
@@ -397,6 +450,8 @@ public class DetailActivity extends AppCompatActivity {
                         if (isChecked) {
                             x.setChecked(false);
                             seru.setChecked(false);
+                            selectedToggle.set(position,1);
+
                         }
                     }
                 });
@@ -406,6 +461,7 @@ public class DetailActivity extends AppCompatActivity {
                         if (isChecked) {
                             check.setChecked(false);
                             seru.setChecked(false);
+                            selectedToggle.set(position,3);
                         }
 
                     }
@@ -416,6 +472,7 @@ public class DetailActivity extends AppCompatActivity {
                         if (isChecked) {
                             x.setChecked(false);
                             check.setChecked(false);
+                            selectedToggle.set(position,2);
                         }
                     }
                 });
@@ -427,6 +484,8 @@ public class DetailActivity extends AppCompatActivity {
         };
 
         recyclerView.setAdapter(firebaseRecyclerAdapter);
+
+
 
             recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
                 @Override
@@ -450,6 +509,9 @@ public class DetailActivity extends AppCompatActivity {
 
         if (item.getTitle() == "Add") {
             absenMode();
+        }
+        if(item.getTitle() == "Absensi Dimulai") {
+
         }
         return super.onOptionsItemSelected(item);
     }
@@ -623,7 +685,7 @@ public class DetailActivity extends AppCompatActivity {
         @Override
         public boolean onCreateActionMode(ActionMode mode, Menu menu) {
             modeAbsen = true;
-            menu.add("Absensi Dimulai");
+            menu.add("Absensi Dimulai").setIcon(R.drawable.ic_done_all_black_24dp);
             fabAbsen.setVisibility(View.GONE);
             AppBarLayout layout = findViewById(R.id.appbar);
 
@@ -649,12 +711,36 @@ public class DetailActivity extends AppCompatActivity {
 
         @Override
         public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-            return false;
+            if (item.getTitle() == "Absensi Dimulai") {
+                Log.v("0", String.valueOf(selectedToggle));
+                if (!selectedToggle.contains(0)) {
+
+                    for (int i = 0;i<selectedToggle.size();i++) {
+                        DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("pertemuan").
+                                child(key).child(pesertaArray.get(i));
+                        ref.child(String.valueOf(pertemuanKeInt + 1)).setValue(selectedToggle.get(i));
+                    }
+                    refPertemuan.setValue(pertemuanKeInt + 1);
+
+
+                    Toast.makeText(DetailActivity.this,"Pengabsenan berhasil.",
+                            Toast.LENGTH_LONG).show();
+                    mode.finish();
+                } else
+
+                Toast.makeText(DetailActivity.this,"Ada peserta yang belum di absen, silahkan cek kembali.",
+                        Toast.LENGTH_LONG).show();
+
+
+
+            }
+            return true;
 
         }
 
         @Override
         public void onDestroyActionMode(ActionMode mode) {
+
 
             AppBarLayout layout = findViewById(R.id.appbar);
             layout.setExpanded(true,true);
