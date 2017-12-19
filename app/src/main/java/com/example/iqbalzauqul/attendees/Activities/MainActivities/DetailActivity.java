@@ -71,6 +71,7 @@ public class DetailActivity extends AppCompatActivity {
     Menu collapsedMenu;
     //    private Query mQuery;
     RecyclerView recyclerView;
+
     String key;
     CoordinatorLayout coordinatorLayout;
     private boolean appBarExpanded;
@@ -101,9 +102,8 @@ public class DetailActivity extends AppCompatActivity {
          refPertemuan.addValueEventListener(new ValueEventListener() {
              @Override
              public void onDataChange(DataSnapshot dataSnapshot) {
-                 pertemuanKe = dataSnapshot.getValue().toString();
-                 pertemuanKeInt = Integer.parseInt(pertemuanKe);
-
+                     pertemuanKe = dataSnapshot.getValue().toString();
+                     pertemuanKeInt = Integer.parseInt( pertemuanKe );
              }
 
              @Override
@@ -296,8 +296,10 @@ public class DetailActivity extends AppCompatActivity {
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main, menu);
+        //getMenuInflater().inflate(R.menu.detail_activity_menu, menu);
         collapsedMenu = menu;
+        menu.add("Update");
+
         return true;
     }
 
@@ -363,74 +365,68 @@ public class DetailActivity extends AppCompatActivity {
                     @Override
                     public boolean onLongClick(View v){
                         final String ava = model.getAvatar();
-                        AlertDialog.Builder builder1 = new AlertDialog.Builder(DetailActivity.this, R.style.MyAlertDialogStyle);
-                        LayoutInflater inflater = getLayoutInflater();
-                        @SuppressLint("InflateParams") final View dialogView = inflater.inflate(R.layout.update_dialog, null);
-                        builder1.setView(dialogView);
+                        CharSequence menu[] = new CharSequence[] {"Update", "Delete", "Cancel"};
 
-                        final Button deleteBtn = dialogView.findViewById( R.id.buttonDelete );
-                        final Button updateBtn = dialogView.findViewById( R.id.buttonUpdate );
-                        final Button cancelBtn = dialogView.findViewById( R.id.buttonCancel );
+                        AlertDialog.Builder builder1 = new AlertDialog.Builder(DetailActivity.this);
+
 
                         builder1.setCancelable(true);
                         builder1.setTitle(model.getNama());
+                        builder1.setIcon( R.drawable.defaultava );
                         final AlertDialog b = builder1.create();
-                        b.show();
 
-                        deleteBtn.setOnClickListener( new View.OnClickListener() {
+                        builder1.setItems(menu, new DialogInterface.OnClickListener() {
                             @Override
-                            public void onClick(View view) {
-                                progressDialog.show();
-                                DatabaseReference drPeserta = FirebaseDatabase.getInstance().getReference("pesertaKelas").child( key ).child( kode );
-
-
-
-
-                                drPeserta.removeValue().addOnCompleteListener( new OnCompleteListener<Void>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<Void> task) {
-                                        //Cek apakah avatar null? (kasus join kelas via kode tanpa avatar)
-                                        if(model.getAvatar()!=null){
-                                            FirebaseStorage mFirebaseStorage = FirebaseStorage.getInstance();
-                                            StorageReference photoRef = mFirebaseStorage.getReferenceFromUrl( ava );
-                                            photoRef.delete();
-                                        }
-
+                            public void onClick(DialogInterface dialog, int which) {
+                                switch (which){
+                                    case 0:
+                                        Intent intent = new Intent( DetailActivity.this, updatePeserta.class );
+                                        intent.putExtra("key", key);
+                                        intent.putExtra("kode", kode);
+                                        intent.putExtra( "namaPlaceholder",model.getNama());
+                                        intent.putExtra( "IdPlaceholder", model.getNomorIdentitas());
+                                        intent.putExtra("avatar",model.getAvatar());
                                         b.cancel();
-                                        Toast.makeText( getApplicationContext(), model.getNama()+"  Telah Dihapus", Toast.LENGTH_LONG ).show();
-                                        progressDialog.dismiss();
-                                        //TO DO CODE
-                                    }
-                                } ).addOnFailureListener( new OnFailureListener() {
-                                    @Override
-                                    public void onFailure(@NonNull Exception e) {
-                                        Toast.makeText( getApplicationContext(), "GAGAL", Toast.LENGTH_LONG ).show();
-                                        //TO DO CODE
-                                    }
-                                } );
-                            }
-                        } );
+                                        startActivity(intent);
+                                        break;
 
-                        updateBtn.setOnClickListener( new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                Intent intent = new Intent( DetailActivity.this, updatePeserta.class );
-                                intent.putExtra("key", key);
-                                intent.putExtra("kode", kode);
-                                intent.putExtra( "namaPlaceholder",model.getNama());
-                                intent.putExtra( "IdPlaceholder", model.getNomorIdentitas());
-                                intent.putExtra("avatar",model.getAvatar());
-                                b.cancel();
-                                startActivity(intent);
-                            }
-                        } );
+                                    case 1:
+                                        progressDialog.show();
+                                        DatabaseReference drPeserta = FirebaseDatabase.getInstance().getReference("pesertaKelas").child( key ).child( kode );
 
-                        cancelBtn.setOnClickListener( new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                b.cancel();
+
+
+
+                                        drPeserta.removeValue().addOnCompleteListener( new OnCompleteListener<Void>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<Void> task) {
+                                                //Cek apakah avatar null? (kasus join kelas via kode tanpa avatar)
+                                                if(model.getAvatar()!=null){
+                                                    FirebaseStorage mFirebaseStorage = FirebaseStorage.getInstance();
+                                                    StorageReference photoRef = mFirebaseStorage.getReferenceFromUrl( ava );
+                                                    photoRef.delete();
+                                                }
+
+                                                b.cancel();
+                                                Toast.makeText( getApplicationContext(), model.getNama()+"  Telah Dihapus", Toast.LENGTH_SHORT ).show();
+                                                progressDialog.dismiss();
+                                                //TO DO CODE
+                                            }
+                                        } ).addOnFailureListener( new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
+                                                Toast.makeText( getApplicationContext(), "GAGAL", Toast.LENGTH_SHORT ).show();
+                                                //TO DO CODE
+                                            }
+                                        } );
+                                        break;
+
+                                    case 2:
+                                        b.cancel();
+                                }
                             }
-                        } );
+                        });
+                        builder1.show();
 
                         return true;
                     }
@@ -506,7 +502,17 @@ public class DetailActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-
+        if (item.getTitle() == "Update") {
+            final String nama = getIntent().getStringExtra("nama");
+            final String desc = getIntent().getStringExtra("descPlaceholder");
+            Intent intent = new Intent(DetailActivity.this, updateKelas.class);
+            intent.putExtra( "jmlPertemuan",jmlPertemuan );
+            intent.putExtra( "namaPlaceholder",nama );
+            intent.putExtra( "descPlaceholder", desc);
+            intent.putExtra( "imageKelas",kelasbg );
+            intent.putExtra("key", key);
+            startActivity(intent);
+        }
         if (item.getTitle() == "Add") {
             absenMode();
         }
@@ -520,7 +526,7 @@ public class DetailActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == 1) {
             if (resultCode == Activity.RESULT_OK) {
-                Toast.makeText(this,"Berhasil ditambahkan.",Toast.LENGTH_LONG).show();
+                Toast.makeText(this,"Berhasil ditambahkan.",Toast.LENGTH_SHORT).show();
             }
             if (resultCode == Activity.RESULT_CANCELED) {
                 //Write your code if there's no result

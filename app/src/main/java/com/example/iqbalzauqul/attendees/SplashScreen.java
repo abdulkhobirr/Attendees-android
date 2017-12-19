@@ -11,14 +11,14 @@ public class SplashScreen extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_splash_screen);//disesuaikan dengan halaman xml untuk splash screen nya
+        setContentView(R.layout.activity_splash_screen);
 
         Thread myThread = new Thread(){
             @Override
             public void run() {
                 try{
-                    sleep (1000);//sleep(1000)
-                    Intent intent = new Intent(SplashScreen.this,LoginActivity.class);//disesuaikan : Intent(SplashScreen.this, "HalamanTujuan".class)
+                    sleep (400);//sleep(1000)
+                    Intent intent = new Intent(SplashScreen.this,LoginActivity.class);
                     startActivity(intent);
                     finish();
                 } catch (InterruptedException e){
