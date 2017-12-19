@@ -129,7 +129,7 @@ public class DetailActivity extends AppCompatActivity {
         String urlFoto =  kelasbg;
         Picasso.with(this).load(urlFoto).into(Header);
         loadBitmap(urlFoto);
-        fetchView(jmlPertemuan);
+        fetchView();
         fetchRecyclerView();
 
 
@@ -187,7 +187,7 @@ public class DetailActivity extends AppCompatActivity {
     }
 
 
-    private void fetchView(String jmlPertemuan) {
+    private void fetchView() {
         Toolbar toolbar =  findViewById(R.id.anim_toolbar);
 
         FloatingActionButton fab = findViewById(R.id.fab_detail_activity);
@@ -237,7 +237,7 @@ public class DetailActivity extends AppCompatActivity {
                     invalidateOptionsMenu();
                 } else {
                     appBarExpanded = true;
-                    String titleUpdate = nama + "\n(" +pertemuanKeInt + "/20 Pertemuan)";
+                    String titleUpdate = nama + "\n(" +pertemuanKeInt + "/" + jmlPertemuan +" Pertemuan)";
                     collapsingToolbar.setTitle(titleUpdate);
                     invalidateOptionsMenu();
                 }
@@ -503,6 +503,7 @@ public class DetailActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getTitle() == "Update") {
+
             final String nama = getIntent().getStringExtra("nama");
             final String desc = getIntent().getStringExtra("descPlaceholder");
             Intent intent = new Intent(DetailActivity.this, updateKelas.class);
@@ -516,9 +517,7 @@ public class DetailActivity extends AppCompatActivity {
         if (item.getTitle() == "Add") {
             absenMode();
         }
-        if(item.getTitle() == "Absensi Dimulai") {
 
-        }
         return super.onOptionsItemSelected(item);
     }
 
@@ -721,13 +720,13 @@ public class DetailActivity extends AppCompatActivity {
                 Log.v("0", String.valueOf(selectedToggle));
                 if (!selectedToggle.contains(0)) {
 
+
                     for (int i = 0;i<selectedToggle.size();i++) {
                         DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("pertemuan").
                                 child(key).child(pesertaArray.get(i));
                         ref.child(String.valueOf(pertemuanKeInt + 1)).setValue(selectedToggle.get(i));
                     }
                     refPertemuan.setValue(pertemuanKeInt + 1);
-
 
                     Toast.makeText(DetailActivity.this,"Pengabsenan berhasil.",
                             Toast.LENGTH_LONG).show();
