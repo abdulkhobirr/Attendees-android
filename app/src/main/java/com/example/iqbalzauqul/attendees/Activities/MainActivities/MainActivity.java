@@ -231,81 +231,70 @@ public class MainActivity extends AppCompatActivity
                 viewHolder.mView.setOnLongClickListener(new View.OnLongClickListener(){
                     @Override
                     public boolean onLongClick(View v){
-                        AlertDialog.Builder builder1 = new AlertDialog.Builder(MainActivity.this, R.style.MyAlertDialogStyle);
-                        LayoutInflater inflater = getLayoutInflater();
-                        final View dialogView = inflater.inflate(R.layout.kelas_dialog, null);
-                        builder1.setView(dialogView);
+                        CharSequence menu[] = new CharSequence[] {"Update", "Delete", "Cancel"};
 
-                        final Button updateBtn = dialogView.findViewById( R.id.buttonUpdateKelas );
-                        final Button deleteBtn = dialogView.findViewById( R.id.buttonHapusKelas );
-                        final Button cancelBtn = dialogView.findViewById( R.id.buttonCancelKelas );
+                        AlertDialog.Builder builder1 = new AlertDialog.Builder(MainActivity.this);
 
-                        //builder1.setMessage( "jumlah pertemuan :" +model.getJmlPertemuan());
                         builder1.setCancelable(true);
-                        builder1.setTitle(model.getnama());
+                        builder1.setTitle(model.getnama())
+                        .setIcon(R.drawable.kelass);
                         final AlertDialog b = builder1.create();
-                        b.show();
 
-                        deleteBtn.setOnClickListener( new View.OnClickListener() {
+                        builder1.setItems(menu, new DialogInterface.OnClickListener() {
                             @Override
-                            public void onClick(View view) {
-                                final String link = model.getimage();
-                                DatabaseReference drKelas = FirebaseDatabase.getInstance().getReference("kelas").child( key );
-                                final  DatabaseReference drPesertaKelas = FirebaseDatabase.getInstance().getReference("pesertaKelas").child( key );
-
-
-                                FirebaseStorage mFirebaseStorage = FirebaseStorage.getInstance();
-                                final StorageReference photoRef = mFirebaseStorage.getReferenceFromUrl( link );
-
-                                drKelas.removeValue().addOnCompleteListener( new OnCompleteListener<Void>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<Void> task) {
-                                        drPesertaKelas.removeValue();
-                                        photoRef.delete();
+                            public void onClick(DialogInterface dialog, int which) {
+                                switch(which){
+                                    case 0:
+                                        Intent intent = new Intent( MainActivity.this, updateKelas.class );
+                                        intent.putExtra("key", key);
+                                        intent.putExtra( "jmlPertemuan",model.getJmlPertemuan() );
+                                        intent.putExtra( "namaPlaceholder",model.getnama() );
+                                        intent.putExtra( "descPlaceholder", model.getdesc() );
+                                        intent.putExtra("imageKelas",model.getimage());
                                         b.cancel();
-                                        Toast.makeText( getApplicationContext(), "Kelas Telah Dihapus", Toast.LENGTH_LONG ).show();
-                                        //TO DO CODE
-                                    }
-                                } ).addOnFailureListener( new OnFailureListener() {
-                                    @Override
-                                    public void onFailure(@NonNull Exception e) {
-                                        Toast.makeText( getApplicationContext(), "GAGAL", Toast.LENGTH_LONG ).show();
-                                        //TO DO CODE
-                                    }
-                                } );
-                            }
-                        } );
+                                        startActivity( intent );
+                                        break;
 
-                        updateBtn.setOnClickListener( new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                Intent intent = new Intent( MainActivity.this, updateKelas.class );
-                                intent.putExtra("key", key);
-                                intent.putExtra( "jmlPertemuan",model.getJmlPertemuan() );
-                                intent.putExtra( "namaPlaceholder",model.getnama() );
-                                intent.putExtra( "descPlaceholder", model.getdesc() );
-                                intent.putExtra("imageKelas",model.getimage());
-                                b.cancel();
-                                startActivity( intent );
-                            }
-                        } );
+                                    case 1:
+                                        final String link = model.getimage();
+                                        DatabaseReference drKelas = FirebaseDatabase.getInstance().getReference("kelas").child( key );
+                                        final  DatabaseReference drPesertaKelas = FirebaseDatabase.getInstance().getReference("pesertaKelas").child( key );
 
-                        cancelBtn.setOnClickListener( new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                b.cancel();
+                                        FirebaseStorage mFirebaseStorage = FirebaseStorage.getInstance();
+                                        final StorageReference photoRef = mFirebaseStorage.getReferenceFromUrl( link );
+
+                                        drKelas.removeValue().addOnCompleteListener( new OnCompleteListener<Void>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<Void> task) {
+                                                drPesertaKelas.removeValue();
+                                                photoRef.delete();
+                                                b.cancel();
+                                                Toast.makeText( getApplicationContext(), "Kelas Telah Dihapus", Toast.LENGTH_LONG ).show();
+                                            }
+                                        } ).addOnFailureListener( new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
+                                                Toast.makeText( getApplicationContext(), "GAGAL", Toast.LENGTH_LONG ).show();
+                                            }
+                                        } );
+                                        break;
+
+                                    case 2:
+                                        b.cancel();
+                                }
                             }
-                        } );
+                        });
+                        builder1.show();
 
                         return true;
                     }
-
                 });
 
                 viewHolder.mView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         Intent intent = new Intent(MainActivity.this, DetailActivity.class);
+                        intent.putExtra( "descPlaceholder", model.getdesc() );
                         intent.putExtra("nama", model.getnama());
                         intent.putExtra( "kelasbg",model.getimage() );
                         intent.putExtra("key", key);
