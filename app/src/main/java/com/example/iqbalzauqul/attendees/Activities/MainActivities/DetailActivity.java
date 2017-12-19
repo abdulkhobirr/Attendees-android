@@ -248,6 +248,7 @@ public class DetailActivity extends AppCompatActivity {
     private void absenMode() {
         RelativeLayout presentase = findViewById(R.id.presentaseContainter);
         LinearLayout toggle = findViewById(R.id.toggleContainer);
+        toggle.destroyDrawingCache();
         toggle.setVisibility(View.VISIBLE);
         (DetailActivity.this).startSupportActionMode(actionModeCallbacks);
 
@@ -437,42 +438,49 @@ public class DetailActivity extends AppCompatActivity {
             @Override
             public void onBindViewHolder(PesertaViewHolder viewHolder, final int position) {
                 final ToggleButton check = viewHolder.mView.findViewById(R.id.check_toggle);
-               final  ToggleButton x = viewHolder.mView.findViewById(R.id.x_toggle);
+                final ToggleButton x = viewHolder.mView.findViewById(R.id.x_toggle);
                 final ToggleButton seru = viewHolder.mView.findViewById(R.id.seru_toggle);
+                if (modeAbsen) {
 
-                check.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                    @Override
-                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                        if (isChecked) {
-                            x.setChecked(false);
-                            seru.setChecked(false);
-                            selectedToggle.set(position,1);
+                    check.setOnCheckedChangeListener(null);
+                    check.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                        @Override
+                        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                            if (isChecked) {
+                                x.setChecked(false);
+                                seru.setChecked(false);
+                                selectedToggle.set(position, 1);
+                                Log.v("Loga", "Loga");
+
+                            }
+                        }
+                    });
+                    x.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                        @Override
+                        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                            if (isChecked) {
+                                check.setChecked(false);
+                                seru.setChecked(false);
+                                selectedToggle.set(position, 3);
+                            }
 
                         }
-                    }
-                });
-                x.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                    @Override
-                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                        if (isChecked) {
-                            check.setChecked(false);
-                            seru.setChecked(false);
-                            selectedToggle.set(position,3);
+                    });
+                    seru.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                        @Override
+                        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                            if (isChecked) {
+                                x.setChecked(false);
+                                check.setChecked(false);
+                                selectedToggle.set(position, 2);
+                            }
                         }
-
-                    }
-                });
-                seru.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                    @Override
-                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                        if (isChecked) {
-                            x.setChecked(false);
-                            check.setChecked(false);
-                            selectedToggle.set(position,2);
-                        }
-                    }
-                });
-
+                    });
+                } else {
+                    check.setChecked(false);
+                    x.setChecked(false);
+                    seru.setChecked(false);
+                }
 
 
                 super.onBindViewHolder(viewHolder, position);
@@ -538,8 +546,10 @@ public class DetailActivity extends AppCompatActivity {
         View mView;
 
         public PesertaViewHolder(View itemView) {
+
             super(itemView);
             mView = itemView;
+
         }
 
         private void setNomorIdentitas(String nomorIdentitas) {
@@ -746,12 +756,13 @@ public class DetailActivity extends AppCompatActivity {
         @Override
         public void onDestroyActionMode(ActionMode mode) {
 
-
+            selectedToggle.clear();
             AppBarLayout layout = findViewById(R.id.appbar);
             layout.setExpanded(true,true);
             paramsDef.height = 512;
             layout.setLayoutParams(paramsDef);
             modeAbsen = false;
+            recyclerView.forceLayout();
             recyclerView.getAdapter().notifyDataSetChanged();
 
 
