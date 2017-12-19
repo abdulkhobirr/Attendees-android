@@ -132,6 +132,7 @@ public class AddKegiatanActivity extends AppCompatActivity {
                     kelasRef.child("jmlPertemuan").setValue(jmlP);
                     kelasRef.child("uid").setValue(uid);
                     kelasRef.child("image").setValue(downloadUrl.toString());
+                    kelasRef.child("pertemuanKe").setValue(0);
 
                     progressDialog.dismiss();
                     finish();
