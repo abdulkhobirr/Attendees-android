@@ -23,7 +23,7 @@
             android:fitsSystemWindows="false"
             app:contentScrim="?attr/colorPrimary"
             app:expandedTitleMarginStart="@dimen/activity_margin_content"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed|snap"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed"
             app:maxLines="3"
             app:lineSpacingMultiplier="1.2"
             >
