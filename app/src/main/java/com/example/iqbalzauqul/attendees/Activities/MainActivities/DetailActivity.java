@@ -436,10 +436,11 @@ public class DetailActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onBindViewHolder(PesertaViewHolder viewHolder, final int position) {
+            public void onBindViewHolder(final PesertaViewHolder viewHolder, int position) {
                 final ToggleButton check = viewHolder.mView.findViewById(R.id.check_toggle);
                 final ToggleButton x = viewHolder.mView.findViewById(R.id.x_toggle);
                 final ToggleButton seru = viewHolder.mView.findViewById(R.id.seru_toggle);
+
                 if (modeAbsen) {
 
                     check.setOnCheckedChangeListener(null);
@@ -449,7 +450,7 @@ public class DetailActivity extends AppCompatActivity {
                             if (isChecked) {
                                 x.setChecked(false);
                                 seru.setChecked(false);
-                                selectedToggle.set(position, 1);
+                                selectedToggle.set(viewHolder.getAdapterPosition(), 1);
                                 Log.v("Loga", "Loga");
 
                             }
@@ -461,7 +462,7 @@ public class DetailActivity extends AppCompatActivity {
                             if (isChecked) {
                                 check.setChecked(false);
                                 seru.setChecked(false);
-                                selectedToggle.set(position, 3);
+                                selectedToggle.set(viewHolder.getAdapterPosition(), 3);
                             }
 
                         }
@@ -472,7 +473,7 @@ public class DetailActivity extends AppCompatActivity {
                             if (isChecked) {
                                 x.setChecked(false);
                                 check.setChecked(false);
-                                selectedToggle.set(position, 2);
+                                selectedToggle.set(viewHolder.getAdapterPosition(), 2);
                             }
                         }
                     });
