@@ -64,9 +64,9 @@
         android:layout_below="@+id/password_txt"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="34dp"
-        android:background="@color/colorPrimary"
+        android:background="@drawable/buttonbg_light"
+        android:textColor="@android:color/white"
         android:text="Sign Up"
-        android:textColor="@color/cardview_light_background"
         tools:layout_editor_absoluteX="148dp"
         tools:layout_editor_absoluteY="283dp" />
 

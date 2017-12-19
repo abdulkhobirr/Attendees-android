@@ -15,6 +15,7 @@
         <item name="windowActionModeOverlay">true</item>
         <item name="windowNoTitle">true</item>
         <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:textColorHint">@color/colorDark</item>
 
 
     </style>

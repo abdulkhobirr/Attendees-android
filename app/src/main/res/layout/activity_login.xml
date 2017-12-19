@@ -43,6 +43,9 @@
                 android:cropToPadding="false"
                 android:visibility="visible"
                 app:srcCompat="@drawable/ic_icon" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
 
             <ScrollView
                 android:id="@+id/login_form"
@@ -72,13 +75,13 @@
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="15dp"
                             android:layout_marginStart="15dp"
-                            android:drawableStart="@drawable/ic_email"
-                            android:drawableTint="#BC337E"
+                            android:drawableStart="@drawable/ic_email_dark"
                             android:hint="@string/prompt_email"
                             android:inputType="textEmailAddress"
                             android:maxLines="1"
                             android:singleLine="true"
-                            android:textColor="@color/cardview_light_background"/>
+                            android:textColor="#F6F6E8"
+                            android:textColorHint="@color/colorDark" />
 
                     </android.support.design.widget.TextInputLayout>
 
@@ -87,7 +90,7 @@
                         android:layout_height="wrap_content"
                         app:passwordToggleContentDescription="description"
                         app:passwordToggleEnabled="true"
-                        app:passwordToggleTint="#BC337E">
+                        app:passwordToggleTint="#F6F6E8">
 
                         <EditText
                             android:id="@+id/password"
@@ -95,15 +98,16 @@
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="15dp"
                             android:layout_marginStart="15dp"
-                            android:drawableStart="@drawable/ic_password"
-                            android:drawableTint="#BC337E"
+                            android:drawableStart="@drawable/ic_password_dark"
                             android:hint="@string/prompt_password"
                             android:imeActionId="6"
                             android:imeActionLabel="@string/action_sign_in_short"
                             android:imeOptions="actionUnspecified"
                             android:inputType="textPassword"
+                            android:textColor="#F6F6E8"
                             android:maxLines="1"
-                            android:singleLine="true" />
+                            android:singleLine="true"
+                            android:textColorHint="@color/colorDark"/>
 
                     </android.support.design.widget.TextInputLayout>
 
@@ -116,7 +120,7 @@
                         android:background="@drawable/buttonbg"
                         android:text="@string/action_sign_in_short"
                         android:textAlignment="center"
-                        android:textColor="#fff"
+                        android:textColor="#000000"
                         android:textStyle="bold" />
 
                     <Button
@@ -127,7 +131,7 @@
                         android:layout_marginTop="16dp"
                         android:background="@drawable/buttonbg"
                         android:text="@string/action_sign_up"
-                        android:textColor="#fff" />
+                        android:textColor="#000000" />
 
                     <Button
                         android:id="@+id/lupaPasswordButton"
@@ -139,6 +143,7 @@
                         android:layout_marginTop="5dp"
                         android:background="@null"
                         android:text="@string/lupa_password"
+                        android:textColor="#F6F6E8"
                         android:textAllCaps="false" />
 
                 </LinearLayout>
