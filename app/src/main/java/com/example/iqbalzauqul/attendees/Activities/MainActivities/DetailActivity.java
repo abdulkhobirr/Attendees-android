@@ -88,6 +88,7 @@ public class DetailActivity extends AppCompatActivity {
     int pertemuanKeInt;
     String pertemuanKe;
     String jmlPertemuan;
+    int height;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -595,6 +596,7 @@ public class DetailActivity extends AppCompatActivity {
 
                     .build();
 
+
             //Create Animation
             int series1Index = arcView.addSeries(seriesItem1);
             arcView.addEvent(new DecoEvent.Builder(DecoEvent.EventType.EVENT_SHOW, true)
@@ -625,6 +627,7 @@ public class DetailActivity extends AppCompatActivity {
                 public void onSeriesItemDisplayProgress(float percentComplete) {
 
                 }
+
             });
 
 
@@ -707,10 +710,11 @@ public class DetailActivity extends AppCompatActivity {
 
 
             paramsDef = (CoordinatorLayout.LayoutParams) layout.getLayoutParams();
-            Log.v("param", String.valueOf(paramsDef.height));
-            CoordinatorLayout.LayoutParams params = paramsDef;
-            params.height = 3*80; // COLLAPSED_HEIGHT
-            layout.setLayoutParams(params);
+            height = paramsDef.height;
+
+
+            paramsDef.height = 3*80; // COLLAPSED_HEIGHT
+            layout.setLayoutParams(paramsDef);
             layout.setExpanded(false,true);
             recyclerView.getAdapter().notifyDataSetChanged();
 
@@ -733,11 +737,37 @@ public class DetailActivity extends AppCompatActivity {
 
 
                     for (int i = 0;i<selectedToggle.size();i++) {
+                        final int n = i;
+
+                        //set toggle absen
                         DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("pertemuan").
                                 child(key).child(pesertaArray.get(i));
                         ref.child(String.valueOf(pertemuanKeInt + 1)).setValue(selectedToggle.get(i));
+
+                        //set presentase ke database
+                        ref.orderByValue().equalTo(1).addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                              int total = Integer.parseInt(jmlPertemuan);
+                              float persen = (dataSnapshot.getChildrenCount()*100)/total;
+
+                              //set presentase ke databsase
+                              FirebaseDatabase.getInstance().getReference("pesertaKelas")
+                                      .child(key).child(pesertaArray.get(n)).child("progress").setValue(persen);
+
+
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+
+                            }
+                        });
+
                     }
                     refPertemuan.setValue(pertemuanKeInt + 1);
+
+
 
                     Toast.makeText(DetailActivity.this,"Pengabsenan berhasil.",
                             Toast.LENGTH_LONG).show();
