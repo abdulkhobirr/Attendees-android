@@ -75,13 +75,13 @@
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="15dp"
                             android:layout_marginStart="15dp"
-                            android:drawableStart="@drawable/ic_email_dark"
+                            android:drawableStart="@drawable/ic_email"
                             android:hint="@string/prompt_email"
                             android:inputType="textEmailAddress"
                             android:maxLines="1"
                             android:singleLine="true"
-                            android:textColor="#F6F6E8"
-                            android:textColorHint="@color/colorDark" />
+                            android:textColor="#ffffff"
+                            android:textColorHint="#ffffff" />
 
                     </android.support.design.widget.TextInputLayout>
 
@@ -98,7 +98,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="15dp"
                             android:layout_marginStart="15dp"
-                            android:drawableStart="@drawable/ic_password_dark"
+                            android:drawableStart="@drawable/ic_password"
                             android:hint="@string/prompt_password"
                             android:imeActionId="6"
                             android:imeActionLabel="@string/action_sign_in_short"
@@ -107,7 +107,8 @@
                             android:textColor="#F6F6E8"
                             android:maxLines="1"
                             android:singleLine="true"
-                            android:textColorHint="@color/colorDark"/>
+                            android:textColorHint="#ffffff"
+                            />
 
                     </android.support.design.widget.TextInputLayout>
 
