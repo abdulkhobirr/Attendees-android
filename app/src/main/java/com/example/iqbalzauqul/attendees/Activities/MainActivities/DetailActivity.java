@@ -673,26 +673,7 @@ public class DetailActivity extends AppCompatActivity {
 
         }
 
-//        private getToggle() {
-//
-//            ToggleButton check = mView.findViewById(R.id.check_toggle);
-//            ToggleButton seru = mView.findViewById(R.id.seru_toggle);
-//            ToggleButton x = mView.findViewById(R.id.x_toggle);
-//
-//            boolean checkState = check.isChecked();
-//            boolean seruState = seru.isChecked();
-//            boolean xState = x.isChecked();
-//            ArrayList<Boolean> state = new ArrayList<Boolean>();
-//            state.add(checkState);
-//            state.add(seruState);
-//            state.add(xState);
-//            return state;
-//
-//
-//
-//
-//
-//        }
+
 
 
 
