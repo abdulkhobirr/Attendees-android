@@ -89,6 +89,7 @@ public class DetailActivity extends AppCompatActivity {
     String pertemuanKe;
     String jmlPertemuan;
     int height;
+    private  ArrayList<Boolean> animate = new ArrayList<Boolean>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -340,7 +341,7 @@ public class DetailActivity extends AppCompatActivity {
                 viewHolder.setNomorIdentitas(model.getNomorIdentitas());
                 viewHolder.setNama(model.getNama());
                 viewHolder.setAvatar(getApplicationContext(), model.getAvatar());
-                viewHolder.setPresentase(model.getProgress());
+
                 int i = recyclerView.getAdapter().getItemCount();
                 for (;selectedToggle.size() < i;) {
                     selectedToggle.add(0);
@@ -348,9 +349,13 @@ public class DetailActivity extends AppCompatActivity {
                     Log.v("toggle", String.valueOf(selectedToggle));
 
                 }
+                for(;animate.size()<i;) {
+                    animate.add(false);
+                }
                 if (pesertaArray.size() < i) {
                     pesertaArray.add(kode);
                 }
+                viewHolder.setPresentase(model.getProgress(),position,animate);
 
 
                 if(modeAbsen) {
@@ -571,8 +576,11 @@ public class DetailActivity extends AppCompatActivity {
             Picasso.with(ctx).load(avatar).into(imageAvatar);
         }
 
-        private void setPresentase(int presentase) {
+        private void setPresentase(int presentase, int position,ArrayList<Boolean> animated) {
             DecoView arcView = mView.findViewById(R.id.persenArc);
+
+
+
 //            arcView.disableHardwareAccelerationForDecoView();
             String color;
             //Mengeset color
@@ -596,40 +604,42 @@ public class DetailActivity extends AppCompatActivity {
 
                     .build();
 
+            if (animated.get(position) == false) {
+                animated.set(position, true);
 
-            //Create Animation
-            int series1Index = arcView.addSeries(seriesItem1);
-            arcView.addEvent(new DecoEvent.Builder(DecoEvent.EventType.EVENT_SHOW, true)
+                //Create Animation
+                int series1Index = arcView.addSeries(seriesItem1);
+                arcView.addEvent(new DecoEvent.Builder(DecoEvent.EventType.EVENT_SHOW, true)
 
-                    .setDuration(200)
-                    .build());
-            arcView.addEvent(new DecoEvent.Builder(presentase) // jumlah presentase
-                    .setIndex(series1Index)
-                    .setDelay(100)
-                    .setDuration(2500)
-                    .setColor(Color.parseColor(color)) //Animate Color
-                    .build());
-            //Set Text
-            final TextView presentaseText = mView.findViewById(R.id.presentaseText);
-            final String format = "%.0f%%";
-            seriesItem1.addArcSeriesItemListener(new SeriesItem.SeriesItemListener() {
-                @Override
-                public void onSeriesItemAnimationProgress(float percentComplete, float currentPosition) {
-                    if (format.contains("%%")) {
-                        float percentFilled = ((currentPosition - seriesItem1.getMinValue()) / (seriesItem1.getMaxValue() - seriesItem1.getMinValue()));
-                        presentaseText.setText(String.format(format, percentFilled * 100f));
-                    } else {
-                        presentaseText.setText(String.format(format, currentPosition));
+                        .setDuration(200)
+                        .build());
+                arcView.addEvent(new DecoEvent.Builder(presentase) // jumlah presentase
+                        .setIndex(series1Index)
+                        .setDelay(100)
+                        .setDuration(2500)
+                        .setColor(Color.parseColor(color)) //Animate Color
+                        .build());
+                //Set Text
+                final TextView presentaseText = mView.findViewById(R.id.presentaseText);
+                final String format = "%.0f%%";
+                seriesItem1.addArcSeriesItemListener(new SeriesItem.SeriesItemListener() {
+                    @Override
+                    public void onSeriesItemAnimationProgress(float percentComplete, float currentPosition) {
+                        if (format.contains("%%")) {
+                            float percentFilled = ((currentPosition - seriesItem1.getMinValue()) / (seriesItem1.getMaxValue() - seriesItem1.getMinValue()));
+                            presentaseText.setText(String.format(format, percentFilled * 100f));
+                        } else {
+                            presentaseText.setText(String.format(format, currentPosition));
+                        }
                     }
-                }
 
-                @Override
-                public void onSeriesItemDisplayProgress(float percentComplete) {
+                    @Override
+                    public void onSeriesItemDisplayProgress(float percentComplete) {
 
-                }
+                    }
 
-            });
-
+                });
+            }
 
         }
 
@@ -650,28 +660,7 @@ public class DetailActivity extends AppCompatActivity {
 
         }
 
-        private void setToggle() {
-            Log.v("set", "setToggleCalled");
-            ToggleButton check = mView.findViewById(R.id.check_toggle);
-            ToggleButton seru = mView.findViewById(R.id.seru_toggle);
-            ToggleButton x = mView.findViewById(R.id.x_toggle);
 
-            if (check.isChecked()) {
-                check.setChecked(true);
-                seru.setChecked(false);
-                x.setChecked(false);
-            } if (x.isChecked()) {
-                x.setChecked(true);
-                seru.setChecked(false);
-                check.setChecked(false);
-            } if (seru.isChecked()) {
-                seru.setChecked(true);
-                x.setChecked(false);
-                check.setChecked(false);
-            }
-
-
-        }
 
 
 
