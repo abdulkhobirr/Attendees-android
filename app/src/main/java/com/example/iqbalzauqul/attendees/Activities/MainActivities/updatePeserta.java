@@ -28,6 +28,8 @@ import com.squareup.picasso.Picasso;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
+import org.apache.commons.lang3.RandomStringUtils;
+
 public class updatePeserta extends AppCompatActivity {
     private static final int GALLERY_REQUEST = 1;
     ImageButton avatarBtn;
@@ -44,7 +46,7 @@ public class updatePeserta extends AppCompatActivity {
     String avatar;
 
 
-    private Uri imageUri;
+    private Uri imageUri=null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,7 +68,7 @@ public class updatePeserta extends AppCompatActivity {
         namaEditText.setText(namaPlaceholder);
         IdEditText.setText( IdPlaceholder );
 
-        String urlFoto =  avatar;
+        final String urlFoto =  avatar;
         Picasso.with(this).load(urlFoto).into(avatarBtn);
         avatarBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -96,9 +98,10 @@ public class updatePeserta extends AppCompatActivity {
         final String nama = namaEditText.getText().toString().trim();
         final String nomorIdentitas = IdEditText.getText().toString().trim();
 
+        String namaFile= RandomStringUtils.randomNumeric( 5,10 );
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         final DatabaseReference pesertaRef = FirebaseDatabase.getInstance().getReference("pesertaKelas").child(key).child(kode);
-        final StorageReference filePath = storageReference.child("Avatar").child( nomorIdentitas );
+        final StorageReference filePath = storageReference.child("Avatar").child( namaFile );
 
         //final String finalNama = nama;
 
@@ -113,8 +116,9 @@ public class updatePeserta extends AppCompatActivity {
                     if(nomorIdentitas!=null){
                         pesertaRef.child("nomorIdentitas").setValue(nomorIdentitas);
                     }
+                    String urlFoto=avatar;
                     FirebaseStorage mFirebaseStorage = FirebaseStorage.getInstance();
-                    final StorageReference photoRef = mFirebaseStorage.getReferenceFromUrl( avatar );
+                    final StorageReference photoRef = mFirebaseStorage.getReferenceFromUrl( urlFoto );
                     photoRef.delete();
                     pesertaRef.child("avatar").setValue(downloadUrl.toString());
                     progressDialog.dismiss();
