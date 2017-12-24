@@ -2,8 +2,11 @@ package com.example.iqbalzauqul.attendees.Activities.SignupOrLogin;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -44,6 +47,26 @@ public class ResetPasswordActivity extends AppCompatActivity {
 
         auth = FirebaseAuth.getInstance();
 
+        inputEmail.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if (!TextUtils.isEmpty(inputEmail.getText().toString())) {
+                    btnReset.setBackground( ContextCompat.getDrawable(ResetPasswordActivity.this, R.drawable.buttonbg_light));// set here your backgournd to button
+                }else {
+                    btnReset.setBackground( ContextCompat.getDrawable(ResetPasswordActivity.this, R.drawable.buttonbg_default));
+                }
+            }
+        });
 
         btnReset.setOnClickListener(new View.OnClickListener() {
             @Override

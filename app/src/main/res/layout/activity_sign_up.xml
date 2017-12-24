@@ -65,6 +65,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="34dp"
         android:textColor="@android:color/white"
+        android:background="@drawable/buttonbg_default"
         android:text="Sign Up"
         tools:layout_editor_absoluteX="148dp"
         tools:layout_editor_absoluteY="283dp" />

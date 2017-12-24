@@ -118,7 +118,7 @@
                         android:layout_height="40dp"
                         android:layout_gravity="center"
                         android:layout_marginTop="16dp"
-                        android:background="@drawable/buttonbg"
+                        android:background="@drawable/buttonbg_default"
                         android:text="@string/action_sign_in_short"
                         android:textAlignment="center"
                         android:textColor="#000000"

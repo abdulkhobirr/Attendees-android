@@ -11,6 +11,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -65,36 +66,41 @@ public class PesertaActivity extends AppCompatActivity implements NavigationView
             @Override
             public void onClick(View v) {
                 final String kode = kodeKelas.getText().toString();
-                final DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference().child("kelas").child(kode);
-                mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        if (dataSnapshot.exists()) {
-                            DatabaseReference ref = mDatabase.child("nama");
-                            ref.addListenerForSingleValueEvent(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(DataSnapshot dataSnapshot) {
-                                    String nama = dataSnapshot.getValue().toString();
-                                    kodeJoin(nama, kode);
-                                }
+                if(TextUtils.isEmpty( kode )){
+                    Toast.makeText( PesertaActivity.this, "Harap Isi Kode Kelas", Toast.LENGTH_SHORT ).show();
+                }else{
+                    final DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference().child("kelas").child(kode);
+                    mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            if (dataSnapshot.exists()) {
+                                DatabaseReference ref = mDatabase.child("nama");
+                                ref.addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(DataSnapshot dataSnapshot) {
+                                        String nama = dataSnapshot.getValue().toString();
+                                        kodeJoin(nama, kode);
+                                    }
 
-                                @Override
-                                public void onCancelled(DatabaseError databaseError) {
+                                    @Override
+                                    public void onCancelled(DatabaseError databaseError) {
 
-                                }
-                            });
+                                    }
+                                });
 
 
-                        } else {
-                            kodeGagal();
+                            } else {
+                                kodeGagal();
+                            }
                         }
-                    }
 
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
 
-                    }
-                });
+                        }
+                    });
+                }
+
 
 
             }

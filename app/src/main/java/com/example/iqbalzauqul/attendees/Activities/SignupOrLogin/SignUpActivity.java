@@ -3,15 +3,19 @@ package com.example.iqbalzauqul.attendees.Activities.SignupOrLogin;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.iqbalzauqul.attendees.Activities.MainActivities.MainActivity;
 import com.example.iqbalzauqul.attendees.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -52,6 +56,94 @@ public class SignUpActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
         progressDialog = new ProgressDialog(this);
+
+        namaField.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if (!TextUtils.isEmpty(namaField.getText().toString()) && !TextUtils.isEmpty(usernameField.getText().toString()) && !TextUtils.isEmpty(emailField.getText().toString())
+                        && !TextUtils.isEmpty(passwordField.getText().toString())) {
+                    signUp.setBackground( ContextCompat.getDrawable(SignUpActivity.this, R.drawable.buttonbg_light));// set here your backgournd to button
+                }else {
+                    signUp.setBackground( ContextCompat.getDrawable(SignUpActivity.this, R.drawable.buttonbg_default));
+                }
+            }
+        });
+
+        usernameField.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if (!TextUtils.isEmpty(namaField.getText().toString()) && !TextUtils.isEmpty(usernameField.getText().toString()) && !TextUtils.isEmpty(emailField.getText().toString())
+                        && !TextUtils.isEmpty(passwordField.getText().toString())) {
+                    signUp.setBackground( ContextCompat.getDrawable(SignUpActivity.this, R.drawable.buttonbg_light));// set here your backgournd to button
+                }else {
+                    signUp.setBackground( ContextCompat.getDrawable(SignUpActivity.this, R.drawable.buttonbg_default));
+                }
+            }
+        });
+
+        emailField.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if (!TextUtils.isEmpty(namaField.getText().toString()) && !TextUtils.isEmpty(usernameField.getText().toString()) && !TextUtils.isEmpty(emailField.getText().toString())
+                        && !TextUtils.isEmpty(passwordField.getText().toString())) {
+                    signUp.setBackground( ContextCompat.getDrawable(SignUpActivity.this, R.drawable.buttonbg_light));// set here your backgournd to button
+                }else {
+                    signUp.setBackground( ContextCompat.getDrawable(SignUpActivity.this, R.drawable.buttonbg_default));
+                }
+            }
+        });
+
+        passwordField.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if (!TextUtils.isEmpty(namaField.getText().toString()) && !TextUtils.isEmpty(usernameField.getText().toString()) && !TextUtils.isEmpty(emailField.getText().toString())
+                        && !TextUtils.isEmpty(passwordField.getText().toString())) {
+                    signUp.setBackground( ContextCompat.getDrawable(SignUpActivity.this, R.drawable.buttonbg_light));// set here your backgournd to button
+                }else {
+                    signUp.setBackground( ContextCompat.getDrawable(SignUpActivity.this, R.drawable.buttonbg_default));
+                }
+            }
+        });
 
         signUp.setOnClickListener(new View.OnClickListener() {
             @Override

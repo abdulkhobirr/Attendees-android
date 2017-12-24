@@ -532,6 +532,12 @@ public class DetailActivity extends AppCompatActivity {
         if (item.getTitle() == "Add") {
             absenMode();
         }
+        switch (item.getItemId()) {
+            // Respond to the action bar's Up/Home button
+            case android.R.id.home:
+                finish();
+                return true;
+        }
 
         return super.onOptionsItemSelected(item);
     }
@@ -765,7 +771,6 @@ public class DetailActivity extends AppCompatActivity {
             modeAbsen = false;
             recyclerView.forceLayout();
             recyclerView.getAdapter().notifyDataSetChanged();
-
 
         }
     };

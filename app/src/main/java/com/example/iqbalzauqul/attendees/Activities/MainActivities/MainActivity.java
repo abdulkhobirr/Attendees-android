@@ -259,6 +259,7 @@ public class MainActivity extends AppCompatActivity
                                         final String link = model.getimage();
                                         DatabaseReference drKelas = FirebaseDatabase.getInstance().getReference("kelas").child( key );
                                         final  DatabaseReference drPesertaKelas = FirebaseDatabase.getInstance().getReference("pesertaKelas").child( key );
+                                        final DatabaseReference drPertemuan = FirebaseDatabase.getInstance().getReference("pertemuan").child( key );
 
                                         FirebaseStorage mFirebaseStorage = FirebaseStorage.getInstance();
                                         final StorageReference photoRef = mFirebaseStorage.getReferenceFromUrl( link );
@@ -267,6 +268,7 @@ public class MainActivity extends AppCompatActivity
                                             @Override
                                             public void onComplete(@NonNull Task<Void> task) {
                                                 drPesertaKelas.removeValue();
+                                                drPertemuan.removeValue();
                                                 photoRef.delete();
                                                 b.cancel();
                                                 Toast.makeText( getApplicationContext(), "Kelas Telah Dihapus", Toast.LENGTH_LONG ).show();
