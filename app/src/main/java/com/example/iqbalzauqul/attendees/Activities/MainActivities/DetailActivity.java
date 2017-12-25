@@ -770,25 +770,35 @@ public class DetailActivity extends AppCompatActivity {
                 if (!selectedToggle.contains(0)) {
 
 
-                    for (int i = 0;i<selectedToggle.size();i++) {
+                    for (int i = 0;i<=selectedToggle.size()-1;i++) {
                         final int n = i;
 
                         //set toggle absen
-                        DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("pertemuan").
+                        final DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("pertemuan").
                                 child(key).child(pesertaArray.get(i));
                         ref.child(String.valueOf(pertemuanKeInt + 1)).setValue(selectedToggle.get(i));
 
-                        //set presentase ke database
-                        ref.orderByValue().equalTo(1).addListenerForSingleValueEvent(new ValueEventListener() {
+                        ref.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
-                              int total = Integer.parseInt(jmlPertemuan);
-                              float persen = (dataSnapshot.getChildrenCount()*100)/total;
+                                ref.orderByValue().equalTo(1).addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(DataSnapshot dataSnapshot) {
+//                                        int total = pertemuanKeInt + 1;
+                                        float persen = (dataSnapshot.getChildrenCount()*100)/pertemuanKeInt;
 
-                              //set presentase ke databsase
-                              FirebaseDatabase.getInstance().getReference("pesertaKelas")
-                                      .child(key).child(pesertaArray.get(n)).child("progress").setValue(persen);
+                                        //set presentase ke databsase
+                                        FirebaseDatabase.getInstance().getReference("pesertaKelas")
+                                                .child(key).child(pesertaArray.get(n)).child("progress").setValue(persen);
 
+
+                                    }
+
+                                    @Override
+                                    public void onCancelled(DatabaseError databaseError) {
+
+                                    }
+                                });
 
                             }
 
@@ -797,6 +807,9 @@ public class DetailActivity extends AppCompatActivity {
 
                             }
                         });
+
+                        //set presentase ke database
+
 
                     }
                     absenFinished = true;
@@ -825,7 +838,7 @@ public class DetailActivity extends AppCompatActivity {
         @Override
         public void onDestroyActionMode(ActionMode mode) {
 
-
+            fabAbsen.setVisibility(View.VISIBLE);
             selectedToggle.clear();
             AppBarLayout layout = findViewById(R.id.appbar);
             layout.setExpanded(true,true);
