@@ -301,6 +301,7 @@ public class MainActivity extends AppCompatActivity
                         intent.putExtra( "kelasbg",model.getimage() );
                         intent.putExtra("key", key);
                         startActivity(intent);
+
                     }
                 });
 

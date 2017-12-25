@@ -68,6 +68,7 @@ public class DetailActivity extends AppCompatActivity {
     private ArrayList<String> pesertaArray = new ArrayList<String>();
 
 
+    Boolean absenFinished = false;
     Menu collapsedMenu;
     //    private Query mQuery;
     RecyclerView recyclerView;
@@ -93,7 +94,8 @@ public class DetailActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+        super.onCreate(null);
+        Log.v("create","created");
         setContentView(R.layout.activity_detail);
         coordinatorLayout = findViewById(R.id.coor_detail);
         kelasbg = getIntent().getStringExtra( "kelasbg" );
@@ -322,179 +324,212 @@ public class DetailActivity extends AppCompatActivity {
         return super.onPrepareOptionsMenu(collapsedMenu);
     }
 
+
+
     @Override
-    protected void onStart() {
-        super.onStart();
-
-        FirebaseRecyclerAdapter<PesertaList, PesertaViewHolder> firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<PesertaList, PesertaViewHolder>(
-                PesertaList.class,
-                R.layout.peserta_dalam_kelas_cardview,
-                PesertaViewHolder.class,
-                mDatabaseReference
-
-        ) {
-            @Override
-            protected void populateViewHolder(final PesertaViewHolder viewHolder, final PesertaList model, int position) {
-                final ProgressDialog progressDialog = new ProgressDialog(DetailActivity.this);
-                progressDialog.setMessage("Menghapus Peserta");
-                final String kode = getRef(position).getKey();
-                viewHolder.setNomorIdentitas(model.getNomorIdentitas());
-                viewHolder.setNama(model.getNama());
-                viewHolder.setAvatar(getApplicationContext(), model.getAvatar());
-
-                int i = recyclerView.getAdapter().getItemCount();
-                for (;selectedToggle.size() < i;) {
-                    selectedToggle.add(0);
-
-                    Log.v("toggle", String.valueOf(selectedToggle));
-
-                }
-                for(;animate.size()<i;) {
-                    animate.add(false);
-                }
-                if (pesertaArray.size() < i) {
-                    pesertaArray.add(kode);
-                }
-                viewHolder.setPresentase(model.getProgress(),position,animate);
-
-
-                if(modeAbsen) {
-                    viewHolder.setAbsenMode();
+    protected void onResume() {
 
 
 
+            FirebaseRecyclerAdapter<PesertaList, PesertaViewHolder> firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<PesertaList, PesertaViewHolder>(
+                    PesertaList.class,
+                    R.layout.peserta_dalam_kelas_cardview,
+                    PesertaViewHolder.class,
+                    mDatabaseReference
+
+            ) {
+                @Override
+                protected void populateViewHolder(final PesertaViewHolder viewHolder, final PesertaList model, int position) {
+
+                    final ProgressDialog progressDialog = new ProgressDialog(DetailActivity.this);
+                    progressDialog.setMessage("Menghapus Peserta");
+                    final String kode = getRef(position).getKey();
+                    viewHolder.setNomorIdentitas(model.getNomorIdentitas());
+                    viewHolder.setNama(model.getNama());
+                    viewHolder.setAvatar(getApplicationContext(), model.getAvatar());
+
+                    int i = recyclerView.getAdapter().getItemCount();
+                    for (;selectedToggle.size() < i;) {
+                        selectedToggle.add(0);
+
+                        Log.v("toggle", String.valueOf(selectedToggle));
+
+                    }
+                    for(;animate.size()<i;) {
+                        animate.add(false);
+                    }
+                    if (pesertaArray.size() < i) {
+                        pesertaArray.add(kode);
+                    }
 
 
-                } else {
-                    viewHolder.removeAbsenMode();
-                }
-                viewHolder.mView.setOnLongClickListener(new View.OnLongClickListener(){
-                    @Override
-                    public boolean onLongClick(View v){
-                        final String ava = model.getAvatar();
-                        CharSequence menu[] = new CharSequence[] {"Update", "Delete", "Cancel"};
-
-                        AlertDialog.Builder builder1 = new AlertDialog.Builder(DetailActivity.this);
+                    if(modeAbsen) {
+                        viewHolder.setAbsenMode();
 
 
-                        builder1.setCancelable(true);
-                        builder1.setTitle(model.getNama());
-                        builder1.setIcon( R.drawable.defaultava );
-                        final AlertDialog b = builder1.create();
 
-                        builder1.setItems(menu, new DialogInterface.OnClickListener() {
+
+
+                    } else {
+                        viewHolder.removeAbsenMode();
+                        viewHolder.mView.setOnLongClickListener(new View.OnLongClickListener() {
                             @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                switch (which){
-                                    case 0:
-                                        Intent intent = new Intent( DetailActivity.this, updatePeserta.class );
-                                        intent.putExtra("key", key);
-                                        intent.putExtra("kode", kode);
-                                        intent.putExtra( "namaPlaceholder",model.getNama());
-                                        intent.putExtra( "IdPlaceholder", model.getNomorIdentitas());
-                                        intent.putExtra("avatar",model.getAvatar());
-                                        b.cancel();
-                                        startActivity(intent);
-                                        break;
+                            public boolean onLongClick(View v) {
+                                final String ava = model.getAvatar();
+                                CharSequence menu[] = new CharSequence[]{"Update", "Delete", "Cancel"};
 
-                                    case 1:
-                                        progressDialog.show();
-                                        DatabaseReference drPeserta = FirebaseDatabase.getInstance().getReference("pesertaKelas").child( key ).child( kode );
+                                AlertDialog.Builder builder1 = new AlertDialog.Builder(DetailActivity.this);
 
 
+                                builder1.setCancelable(true);
+                                builder1.setTitle(model.getNama());
+                                builder1.setIcon(R.drawable.defaultava);
+                                final AlertDialog b = builder1.create();
 
-
-                                        drPeserta.removeValue().addOnCompleteListener( new OnCompleteListener<Void>() {
-                                            @Override
-                                            public void onComplete(@NonNull Task<Void> task) {
-                                                //Cek apakah avatar null? (kasus join kelas via kode tanpa avatar)
-                                                if(model.getAvatar()!=null){
-                                                    FirebaseStorage mFirebaseStorage = FirebaseStorage.getInstance();
-                                                    StorageReference photoRef = mFirebaseStorage.getReferenceFromUrl( ava );
-                                                    photoRef.delete();
-                                                }
-
+                                builder1.setItems(menu, new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        switch (which) {
+                                            case 0:
+                                                Intent intent = new Intent(DetailActivity.this, updatePeserta.class);
+                                                intent.putExtra("key", key);
+                                                intent.putExtra("kode", kode);
+                                                intent.putExtra("namaPlaceholder", model.getNama());
+                                                intent.putExtra("IdPlaceholder", model.getNomorIdentitas());
+                                                intent.putExtra("avatar", model.getAvatar());
                                                 b.cancel();
-                                                Toast.makeText( getApplicationContext(), model.getNama()+"  Telah Dihapus", Toast.LENGTH_SHORT ).show();
-                                                progressDialog.dismiss();
-                                                //TO DO CODE
-                                            }
-                                        } ).addOnFailureListener( new OnFailureListener() {
-                                            @Override
-                                            public void onFailure(@NonNull Exception e) {
-                                                Toast.makeText( getApplicationContext(), "GAGAL", Toast.LENGTH_SHORT ).show();
-                                                //TO DO CODE
-                                            }
-                                        } );
-                                        break;
+                                                startActivity(intent);
+                                                break;
 
-                                    case 2:
-                                        b.cancel();
+                                            case 1:
+                                                progressDialog.show();
+                                                DatabaseReference drPeserta = FirebaseDatabase.getInstance().getReference("pesertaKelas").child(key).child(kode);
+
+
+                                                drPeserta.removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                    @Override
+                                                    public void onComplete(@NonNull Task<Void> task) {
+                                                        //Cek apakah avatar null? (kasus join kelas via kode tanpa avatar)
+                                                        if (model.getAvatar() != null) {
+                                                            FirebaseStorage mFirebaseStorage = FirebaseStorage.getInstance();
+                                                            StorageReference photoRef = mFirebaseStorage.getReferenceFromUrl(ava);
+                                                            photoRef.delete();
+                                                        }
+
+                                                        b.cancel();
+                                                        Toast.makeText(getApplicationContext(), model.getNama() + "  Telah Dihapus", Toast.LENGTH_SHORT).show();
+                                                        progressDialog.dismiss();
+                                                        //TO DO CODE
+                                                    }
+                                                }).addOnFailureListener(new OnFailureListener() {
+                                                    @Override
+                                                    public void onFailure(@NonNull Exception e) {
+                                                        Toast.makeText(getApplicationContext(), "GAGAL", Toast.LENGTH_SHORT).show();
+                                                        //TO DO CODE
+                                                    }
+                                                });
+                                                break;
+
+                                            case 2:
+                                                b.cancel();
+                                        }
+                                    }
+                                });
+                                builder1.show();
+
+                                return true;
+                            }
+                        });
+
+                        }
+                    if (absenFinished == false) {
+                        viewHolder.setPresentase(model.getProgress(), position, animate);
+                    }
+
+
+                }
+
+                @Override
+                public boolean onFailedToRecycleView(PesertaViewHolder holder) {
+                    Log.v("failed","d");
+                    return super.onFailedToRecycleView(holder);
+                }
+
+
+
+                @Override
+                public void onDataChanged() {
+
+                    super.onDataChanged();
+                    if (absenFinished){
+                        absen();
+                    }
+                }
+
+                @Override
+                public void onBindViewHolder(final PesertaViewHolder viewHolder, int position) {
+                    final ToggleButton check = viewHolder.mView.findViewById(R.id.check_toggle);
+                    final ToggleButton x = viewHolder.mView.findViewById(R.id.x_toggle);
+                    final ToggleButton seru = viewHolder.mView.findViewById(R.id.seru_toggle);
+
+//                    if (absenFinished){
+//                        absen();
+//                    }
+
+
+
+
+
+                    if (modeAbsen) {
+
+                        check.setOnCheckedChangeListener(null);
+                        check.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                            @Override
+                            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                                if (isChecked) {
+                                    x.setChecked(false);
+                                    seru.setChecked(false);
+                                    selectedToggle.set(viewHolder.getAdapterPosition(), 1);
+                                    Log.v("Loga", "Loga");
+
                                 }
                             }
                         });
-                        builder1.show();
+                        x.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                            @Override
+                            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                                if (isChecked) {
+                                    check.setChecked(false);
+                                    seru.setChecked(false);
+                                    selectedToggle.set(viewHolder.getAdapterPosition(), 3);
+                                }
 
-                        return true;
+                            }
+                        });
+                        seru.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                            @Override
+                            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                                if (isChecked) {
+                                    x.setChecked(false);
+                                    check.setChecked(false);
+                                    selectedToggle.set(viewHolder.getAdapterPosition(), 2);
+                                }
+                            }
+                        });
+                    } else {
+                        check.setChecked(false);
+                        x.setChecked(false);
+                        seru.setChecked(false);
                     }
-                });
 
-            }
 
-            @Override
-            public void onBindViewHolder(final PesertaViewHolder viewHolder, int position) {
-                final ToggleButton check = viewHolder.mView.findViewById(R.id.check_toggle);
-                final ToggleButton x = viewHolder.mView.findViewById(R.id.x_toggle);
-                final ToggleButton seru = viewHolder.mView.findViewById(R.id.seru_toggle);
-
-                if (modeAbsen) {
-
-                    check.setOnCheckedChangeListener(null);
-                    check.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                        @Override
-                        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                            if (isChecked) {
-                                x.setChecked(false);
-                                seru.setChecked(false);
-                                selectedToggle.set(viewHolder.getAdapterPosition(), 1);
-                                Log.v("Loga", "Loga");
-
-                            }
-                        }
-                    });
-                    x.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                        @Override
-                        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                            if (isChecked) {
-                                check.setChecked(false);
-                                seru.setChecked(false);
-                                selectedToggle.set(viewHolder.getAdapterPosition(), 3);
-                            }
-
-                        }
-                    });
-                    seru.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                        @Override
-                        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                            if (isChecked) {
-                                x.setChecked(false);
-                                check.setChecked(false);
-                                selectedToggle.set(viewHolder.getAdapterPosition(), 2);
-                            }
-                        }
-                    });
-                } else {
-                    check.setChecked(false);
-                    x.setChecked(false);
-                    seru.setChecked(false);
+                    super.onBindViewHolder(viewHolder, position);
                 }
 
+            };
 
-                super.onBindViewHolder(viewHolder, position);
-            }
-        };
-
-        recyclerView.setAdapter(firebaseRecyclerAdapter);
+            recyclerView.setAdapter(firebaseRecyclerAdapter);
+            Log.v("resumecalled","resumecalled");
 
 
 
@@ -512,6 +547,14 @@ public class DetailActivity extends AppCompatActivity {
                     }
                 }
             });
+
+
+        super.onResume();
+    }
+
+    private void absen() {
+        absenFinished = false;
+//       recyclerView.getAdapter().notifyDataSetChanged();
 
     }
 
@@ -558,7 +601,10 @@ public class DetailActivity extends AppCompatActivity {
     public static class PesertaViewHolder extends RecyclerView.ViewHolder {
         View mView;
 
+
+
         public PesertaViewHolder(View itemView) {
+
 
             super(itemView);
             mView = itemView;
@@ -582,9 +628,9 @@ public class DetailActivity extends AppCompatActivity {
             Picasso.with(ctx).load(avatar).into(imageAvatar);
         }
 
-        private void setPresentase(int presentase, int position,ArrayList<Boolean> animated) {
-            DecoView arcView = mView.findViewById(R.id.persenArc);
-
+        private void setPresentase(final int presentase, final int position, ArrayList<Boolean> animated) {
+            final DecoView arcView = mView.findViewById(R.id.persenArc);
+            Log.v("numv",String.valueOf(presentase));
 
 
 //            arcView.disableHardwareAccelerationForDecoView();
@@ -612,6 +658,7 @@ public class DetailActivity extends AppCompatActivity {
 
             if (animated.get(position) == false) {
                 animated.set(position, true);
+                Log.v("rekonstru",String.valueOf(position));
 
                 //Create Animation
                 int series1Index = arcView.addSeries(seriesItem1);
@@ -619,12 +666,14 @@ public class DetailActivity extends AppCompatActivity {
 
                         .setDuration(200)
                         .build());
+
                 arcView.addEvent(new DecoEvent.Builder(presentase) // jumlah presentase
                         .setIndex(series1Index)
-                        .setDelay(100)
+//                        .setDelay(100)
                         .setDuration(2500)
                         .setColor(Color.parseColor(color)) //Animate Color
                         .build());
+
                 //Set Text
                 final TextView presentaseText = mView.findViewById(R.id.presentaseText);
                 final String format = "%.0f%%";
@@ -634,18 +683,26 @@ public class DetailActivity extends AppCompatActivity {
                         if (format.contains("%%")) {
                             float percentFilled = ((currentPosition - seriesItem1.getMinValue()) / (seriesItem1.getMaxValue() - seriesItem1.getMinValue()));
                             presentaseText.setText(String.format(format, percentFilled * 100f));
+
+
                         } else {
                             presentaseText.setText(String.format(format, currentPosition));
+
                         }
                     }
 
                     @Override
                     public void onSeriesItemDisplayProgress(float percentComplete) {
+                        Log.v("percen",String.valueOf(percentComplete));
+
 
                     }
 
+
                 });
+
             }
+
 
         }
 
@@ -661,8 +718,9 @@ public class DetailActivity extends AppCompatActivity {
             RelativeLayout presentaseRelative = mView.findViewById(R.id.presentaseContainter);
             LinearLayout toggleContainer = mView.findViewById(R.id.toggleContainer);
 
-            presentaseRelative.setVisibility(View.VISIBLE);
             toggleContainer.setVisibility(View.GONE);
+            presentaseRelative.setVisibility(View.VISIBLE);
+
 
         }
 
@@ -741,13 +799,17 @@ public class DetailActivity extends AppCompatActivity {
                         });
 
                     }
+                    absenFinished = true;
+                    recyclerView.getAdapter().notifyDataSetChanged();
                     refPertemuan.setValue(pertemuanKeInt + 1);
-
-
-
-                    Toast.makeText(DetailActivity.this,"Pengabsenan berhasil.",
-                            Toast.LENGTH_LONG).show();
+                    Log.v("first","first");
+//                    recyclerView.getAdapter().notifyDataSetChanged();
                     mode.finish();
+
+
+
+//                    Toast.makeText(DetailActivity.this,"Pengabsenan berhasil.",
+//                            Toast.LENGTH_LONG).show();
                 } else
 
                 Toast.makeText(DetailActivity.this,"Ada peserta yang belum di absen, silahkan cek kembali.",
@@ -763,17 +825,51 @@ public class DetailActivity extends AppCompatActivity {
         @Override
         public void onDestroyActionMode(ActionMode mode) {
 
+
             selectedToggle.clear();
             AppBarLayout layout = findViewById(R.id.appbar);
             layout.setExpanded(true,true);
-            paramsDef.height = 512;
+            paramsDef.height = height;
             layout.setLayoutParams(paramsDef);
             modeAbsen = false;
-            recyclerView.forceLayout();
-            recyclerView.getAdapter().notifyDataSetChanged();
+            for(int i=0;i<animate.size();i++) {
+
+                animate.set(i, false);
+                Log.v("animater", String.valueOf(animate));
+
+            }
+            if(absenFinished == false)
+           recyclerView.getAdapter().notifyDataSetChanged();
+            Log.v("second  ", "");
 
         }
+
     };
+
+    @Override
+    public void onBackPressed() {
+       FirebaseRecyclerAdapter adapter = (FirebaseRecyclerAdapter) recyclerView.getAdapter();
+
+       ((FirebaseRecyclerAdapter) recyclerView.getAdapter()).cleanup();
+//        recyclerView.getAdapter().notifyDataSetChanged();
+        Log.v("back","backpressed");
+//        recyclerView.setAdapter(adapter);
+        super.onBackPressed();
+
+    }
+
+
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        for(int i = 0;i<animate.size();i++) {
+            animate.set(i,false);
+        }
+        ((FirebaseRecyclerAdapter) recyclerView.getAdapter()).cleanup();
+
+    }
+
 
 }
 

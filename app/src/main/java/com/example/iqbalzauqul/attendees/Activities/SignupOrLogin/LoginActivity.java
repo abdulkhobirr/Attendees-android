@@ -91,7 +91,7 @@ public class LoginActivity extends AppCompatActivity{
             }
         });
 
-        progressDialog = new ProgressDialog(this);
+        progressDialog = new ProgressDialog(this,R.style.AppCompatAlertDialogStyle);
 
         if (getIntent().hasExtra("logout")) {
 

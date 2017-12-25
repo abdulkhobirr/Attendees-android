@@ -31,11 +31,14 @@
             android:theme="@style/AppThemeSignIn.NoActionBar" />
         <activity
             android:name=".Activities.MainActivities.DetailActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:parentActivityName=".Activities.MainActivities.MainActivity"
+            />
         <activity
             android:name=".Activities.MainActivities.MainActivity"
             android:label="Kelas"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            />
         <activity
             android:name=".Activities.SignupOrLogin.SignUpActivity"
             android:label="Sign Up"
