@@ -365,6 +365,11 @@ public class DetailActivity extends AppCompatActivity {
 
                     if(modeAbsen) {
                         viewHolder.setAbsenMode();
+                        viewHolder.mView.setOnLongClickListener(null); {
+
+                        };
+
+
 
 
 
@@ -441,7 +446,9 @@ public class DetailActivity extends AppCompatActivity {
                             }
                         });
 
-                        }
+
+                    }
+
                     if (absenFinished == false) {
                         viewHolder.setPresentase(model.getProgress(), position, animate);
                     }
