@@ -339,27 +339,31 @@ public class DetailActivity extends AppCompatActivity {
 
             ) {
                 @Override
-                protected void populateViewHolder(final PesertaViewHolder viewHolder, final PesertaList model, int position) {
+                protected void populateViewHolder(final PesertaViewHolder viewHolder, final PesertaList model,  int position) {
 
                     final ProgressDialog progressDialog = new ProgressDialog(DetailActivity.this);
                     progressDialog.setMessage("Menghapus Peserta");
-                    final String kode = getRef(position).getKey();
                     viewHolder.setNomorIdentitas(model.getNomorIdentitas());
                     viewHolder.setNama(model.getNama());
                     viewHolder.setAvatar(getApplicationContext(), model.getAvatar());
-
+                    final String kode = getRef(position).getKey();
+                    Log.v("codes",kode);
                     int i = recyclerView.getAdapter().getItemCount();
                     for (;selectedToggle.size() < i;) {
                         selectedToggle.add(0);
 
-                        Log.v("toggle", String.valueOf(selectedToggle));
+                        Log.v("toggle", String.valueOf(i));
 
                     }
                     for(;animate.size()<i;) {
                         animate.add(false);
                     }
+                    // check apakah ada item baru yang ditambahkan
                     if (pesertaArray.size() < i) {
-                        pesertaArray.add(kode);
+                        //check apakah kode yang dioper merupakan kode baru
+                        if (!pesertaArray.contains(kode)) {
+                            pesertaArray.add(kode);
+                        }
                     }
 
 
@@ -394,8 +398,10 @@ public class DetailActivity extends AppCompatActivity {
                                 builder1.setItems(menu, new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
+
                                         switch (which) {
                                             case 0:
+
                                                 Intent intent = new Intent(DetailActivity.this, updatePeserta.class);
                                                 intent.putExtra("key", key);
                                                 intent.putExtra("kode", kode);
@@ -446,9 +452,7 @@ public class DetailActivity extends AppCompatActivity {
                             }
                         });
 
-
-                    }
-
+                        }
                     if (absenFinished == false) {
                         viewHolder.setPresentase(model.getProgress(), position, animate);
                     }
@@ -597,6 +601,7 @@ public class DetailActivity extends AppCompatActivity {
         if (requestCode == 1) {
             if (resultCode == Activity.RESULT_OK) {
                 Toast.makeText(this,"Berhasil ditambahkan.",Toast.LENGTH_SHORT).show();
+                recyclerView.getAdapter().notifyDataSetChanged();
             }
             if (resultCode == Activity.RESULT_CANCELED) {
                 //Write your code if there's no result
@@ -773,8 +778,9 @@ public class DetailActivity extends AppCompatActivity {
         @Override
         public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
             if (item.getTitle() == "Absensi Dimulai") {
-                Log.v("0", String.valueOf(selectedToggle));
+                Log.v("sise", String.valueOf(selectedToggle.size()));
                 if (!selectedToggle.contains(0)) {
+
 
 
                     for (int i = 0;i<=selectedToggle.size()-1;i++) {
@@ -793,7 +799,8 @@ public class DetailActivity extends AppCompatActivity {
                                     public void onDataChange(DataSnapshot dataSnapshot) {
 //                                        int total = pertemuanKeInt + 1;
                                         float persen = (dataSnapshot.getChildrenCount()*100)/pertemuanKeInt;
-
+                                        Log.v("ofN",String.valueOf(n));
+                                        Log.v("pesertaArrayArray",String.valueOf(pesertaArray));
                                         //set presentase ke databsase
                                         FirebaseDatabase.getInstance().getReference("pesertaKelas")
                                                 .child(key).child(pesertaArray.get(n)).child("progress").setValue(persen);
