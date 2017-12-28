@@ -31,14 +31,12 @@
             android:theme="@style/AppThemeSignIn.NoActionBar" />
         <activity
             android:name=".Activities.MainActivities.DetailActivity"
-            android:theme="@style/AppTheme.NoActionBar"
             android:parentActivityName=".Activities.MainActivities.MainActivity"
-            />
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".Activities.MainActivities.MainActivity"
             android:label="Kelas"
-            android:theme="@style/AppTheme.NoActionBar"
-            />
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".Activities.SignupOrLogin.SignUpActivity"
             android:label="Sign Up"
@@ -67,8 +65,10 @@
         <activity
             android:name=".Activities.MainActivities.updatePeserta"
             android:label="Update Data Peserta" />
-        <activity android:name=".Activities.MainActivities.updateKelas"
-            android:label="Update Data Kelas"/>
+        <activity
+            android:name=".Activities.MainActivities.updateKelas"
+            android:label="Update Data Kelas" />
+        <activity android:name=".Activities.MainActivities.PesOverview"></activity>
     </application>
 
 </manifest>

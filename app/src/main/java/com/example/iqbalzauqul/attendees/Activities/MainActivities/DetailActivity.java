@@ -1,20 +1,23 @@
 package com.example.iqbalzauqul.attendees.Activities.MainActivities;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import net.opacapp.multilinecollapsingtoolbar.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.graphics.Palette;
@@ -25,11 +28,9 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.util.Log;
 
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -39,9 +40,12 @@ import android.support.v7.widget.Toolbar;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
+
+import com.example.iqbalzauqul.attendees.Manifest;
 import com.example.iqbalzauqul.attendees.Models.PesertaList;
 import com.example.iqbalzauqul.attendees.R;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.github.wnameless.json.flattener.JsonFlattener;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
@@ -57,12 +61,24 @@ import com.hookedonplay.decoviewlib.charts.SeriesItem;
 import com.hookedonplay.decoviewlib.events.DecoEvent;
 import com.squareup.picasso.Picasso;
 
+
+import java.io.File;
+
+
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import jxl.Workbook;
+import jxl.write.Label;
+import jxl.write.WritableSheet;
+import jxl.write.WritableWorkbook;
 
 import static android.app.PendingIntent.getActivity;
 
 public class DetailActivity extends AppCompatActivity {
 
+    private static final int PERMISSION_REQUEST_WRITE = 0;
     private boolean modeAbsen = false;
     private ArrayList<Integer> selectedToggle = new ArrayList<Integer>();
     private ArrayList<String> pesertaArray = new ArrayList<String>();
@@ -194,7 +210,7 @@ public class DetailActivity extends AppCompatActivity {
     private void fetchView() {
         Toolbar toolbar =  findViewById(R.id.anim_toolbar);
 
-        FloatingActionButton fab = findViewById(R.id.fab_detail_activity);
+        FloatingActionButton fab = findViewById(R.id.avatar);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -226,7 +242,7 @@ public class DetailActivity extends AppCompatActivity {
         collapsingToolbar.setTitle(title);
 
 
-        AppBarLayout appBarLayout = findViewById(R.id.appbar);
+        AppBarLayout appBarLayout = findViewById(R.id.appbar_pes);
         appBarExpanded = true;
         appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
             @Override
@@ -367,7 +383,7 @@ public class DetailActivity extends AppCompatActivity {
                     }
 
 
-                    if(modeAbsen) {
+                    if (modeAbsen) {
                         viewHolder.setAbsenMode();
                         viewHolder.mView.setOnLongClickListener(null); {
 
@@ -752,7 +768,7 @@ public class DetailActivity extends AppCompatActivity {
             modeAbsen = true;
             menu.add("Absensi Dimulai").setIcon(R.drawable.ic_done_all_black_24dp);
             fabAbsen.setVisibility(View.GONE);
-            AppBarLayout layout = findViewById(R.id.appbar);
+            AppBarLayout layout = findViewById(R.id.appbar_pes);
 
 
             paramsDef = (CoordinatorLayout.LayoutParams) layout.getLayoutParams();
@@ -831,6 +847,7 @@ public class DetailActivity extends AppCompatActivity {
                     refPertemuan.setValue(pertemuanKeInt + 1);
                     Log.v("first","first");
 //                    recyclerView.getAdapter().notifyDataSetChanged();
+//                    convert();
                     mode.finish();
 
 
@@ -854,7 +871,7 @@ public class DetailActivity extends AppCompatActivity {
 
             fabAbsen.setVisibility(View.VISIBLE);
             selectedToggle.clear();
-            AppBarLayout layout = findViewById(R.id.appbar);
+            AppBarLayout layout = findViewById(R.id.appbar_pes);
             layout.setExpanded(true,true);
             paramsDef.height = height;
             layout.setLayoutParams(paramsDef);
@@ -897,6 +914,120 @@ public class DetailActivity extends AppCompatActivity {
 
     }
 
+   public void convert() {
+       String pathToExternalStorage = Environment.getExternalStoragePublicDirectory((Environment.DIRECTORY_DOWNLOADS)).toString();
+       Log.v("HGH",pathToExternalStorage);
+
+
+       // Here, thisActivity is the current activity
+       if (ContextCompat.checkSelfPermission(this,
+               android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
+               != PackageManager.PERMISSION_GRANTED) {
+
+           // Should we show an explanation?
+           if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                   android.Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+
+               // Show an explanation to the user *asynchronously* -- don't block
+               // this thread waiting for the user's response! After the user
+               // sees the explanation, try again to request the permission.
+
+           } else {
+
+               // No explanation needed, we can request the permission.
+
+               ActivityCompat.requestPermissions(this,
+                       new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                       PERMISSION_REQUEST_WRITE);
+
+               // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
+               // app-defined int constant. The callback method gets the
+               // result of the request.
+           }
+           return;
+       }
+
+
+
+
+
+
+
+
+       File m_file = new File(pathToExternalStorage + "/excel2.xls");
+       WritableWorkbook m_workbook;
+
+       if(!m_file.exists())
+       {
+           try
+           {
+
+               m_workbook = Workbook.createWorkbook(new File(pathToExternalStorage,"excel2.xls"));
+
+
+               // this will create new new sheet in workbook
+               WritableSheet sheet = m_workbook.createSheet("hobbies", 0);
+
+               // this will add label in excel sheet
+               Label label = new Label(0, 0, "ID");
+               sheet.addCell(label);
+
+               Label label2 = new Label(1, 0, "Nama");
+               sheet.addCell(label2);
+               sheet.addCell(new Label(0,1,"101"));
+               sheet.addCell(new Label(1,1,"Iqbal"));
+               m_workbook.write();
+               m_workbook.close();
+               Toast.makeText(DetailActivity.this,"Done",Toast.LENGTH_LONG).show();
+
+           }
+           catch (Exception e) {
+               Toast.makeText(DetailActivity.this,String.valueOf(e.getMessage()),Toast.LENGTH_LONG).show();
+
+
+           }
+           {
+
+           }
+       }
+
+//       HSSFWorkbook workbook = new HSSFWorkbook();
+//       HSSFSheet sheet = workbook.createSheet("1");
+//       HSSFRow row = sheet.createRow(0);
+//       row.createCell(0).setCellValue("ID");
+//       row.createCell(1).setCellValue("Nama");
+//
+//       workbook.write(new FileOutputStream("excel.xls"));
+//       workbook.close();
+//       Toast.makeText(DetailActivity.this,"Done",Toast.LENGTH_LONG).show();
+
+
+
+
+
+//        Map <String,Object> map = JsonFlattener.flattenAsMap(jsonString);
+//       List<Map<String, String>> flatJson = (List<Map<String, String>>) map;
+//
+//       CSVWriter.writeToFile(CSVWriter.getCSV(flatJson), "files/sample_string.csv");
+
+
+
+   }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case PERMISSION_REQUEST_WRITE:
+                if(grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                    //Granted.
+                    convert();
+
+                }
+                else{
+                    //Denied.
+                }
+                break;
+        }
+    }
 
 }
 
