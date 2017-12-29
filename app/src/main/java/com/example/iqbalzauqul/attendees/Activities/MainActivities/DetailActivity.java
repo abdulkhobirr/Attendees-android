@@ -45,7 +45,7 @@ import com.example.iqbalzauqul.attendees.Manifest;
 import com.example.iqbalzauqul.attendees.Models.PesertaList;
 import com.example.iqbalzauqul.attendees.R;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
-import com.github.wnameless.json.flattener.JsonFlattener;
+//import com.github.wnameless.json.flattener.JsonFlattener;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
@@ -122,8 +122,10 @@ public class DetailActivity extends AppCompatActivity {
          refPertemuan.addValueEventListener(new ValueEventListener() {
              @Override
              public void onDataChange(DataSnapshot dataSnapshot) {
+                 if(dataSnapshot.exists()) {
                      pertemuanKe = dataSnapshot.getValue().toString();
                      pertemuanKeInt = Integer.parseInt( pertemuanKe );
+                 }
              }
 
              @Override
@@ -135,7 +137,9 @@ public class DetailActivity extends AppCompatActivity {
         refPertemuan.getParent().child("jmlPertemuan").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                jmlPertemuan = dataSnapshot.getValue().toString();
+                if(dataSnapshot.exists()){
+                    jmlPertemuan = dataSnapshot.getValue().toString();
+                }
             }
 
             @Override
