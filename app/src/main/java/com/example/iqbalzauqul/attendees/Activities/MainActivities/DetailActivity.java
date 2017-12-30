@@ -45,7 +45,7 @@ import com.example.iqbalzauqul.attendees.Manifest;
 import com.example.iqbalzauqul.attendees.Models.PesertaList;
 import com.example.iqbalzauqul.attendees.R;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
-//import com.github.wnameless.json.flattener.JsonFlattener;
+import com.github.wnameless.json.flattener.JsonFlattener;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
@@ -65,16 +65,23 @@ import com.squareup.picasso.Picasso;
 import java.io.File;
 
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import jxl.Cell;
+import jxl.CellView;
 import jxl.Workbook;
+import jxl.format.Colour;
 import jxl.write.Label;
+import jxl.write.WritableCellFormat;
 import jxl.write.WritableSheet;
 import jxl.write.WritableWorkbook;
+import jxl.write.WriteException;
 
 import static android.app.PendingIntent.getActivity;
+import static java.lang.Integer.parseInt;
 
 public class DetailActivity extends AppCompatActivity {
 
@@ -107,6 +114,8 @@ public class DetailActivity extends AppCompatActivity {
     String jmlPertemuan;
     int height;
     private  ArrayList<Boolean> animate = new ArrayList<Boolean>();
+     ArrayList<String> namaList = new ArrayList<String>();
+     ArrayList<String> idList = new ArrayList<String>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -122,10 +131,8 @@ public class DetailActivity extends AppCompatActivity {
          refPertemuan.addValueEventListener(new ValueEventListener() {
              @Override
              public void onDataChange(DataSnapshot dataSnapshot) {
-                 if(dataSnapshot.exists()) {
                      pertemuanKe = dataSnapshot.getValue().toString();
-                     pertemuanKeInt = Integer.parseInt( pertemuanKe );
-                 }
+                     pertemuanKeInt = parseInt( pertemuanKe );
              }
 
              @Override
@@ -137,9 +144,7 @@ public class DetailActivity extends AppCompatActivity {
         refPertemuan.getParent().child("jmlPertemuan").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                if(dataSnapshot.exists()){
-                    jmlPertemuan = dataSnapshot.getValue().toString();
-                }
+                jmlPertemuan = dataSnapshot.getValue().toString();
             }
 
             @Override
@@ -324,6 +329,7 @@ public class DetailActivity extends AppCompatActivity {
         //getMenuInflater().inflate(R.menu.detail_activity_menu, menu);
         collapsedMenu = menu;
         menu.add("Update");
+        menu.add("Export");
 
         return true;
     }
@@ -603,6 +609,10 @@ public class DetailActivity extends AppCompatActivity {
             intent.putExtra("key", key);
             startActivity(intent);
         }
+        if (item.getTitle() == "Export") {
+            listener();
+
+        }
         if (item.getTitle() == "Add") {
             absenMode();
         }
@@ -614,6 +624,32 @@ public class DetailActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void listener() {
+
+        DatabaseReference absenRef = FirebaseDatabase.getInstance().getReference("pesertaKelas/"+key);
+        absenRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+
+                for(DataSnapshot children:dataSnapshot.getChildren()){
+                    String nama = children.child("nama").getValue().toString();
+                    Log.v("nama",nama);
+                    String id = children.child("nomorIdentitas").getValue().toString();
+                    namaList.add(nama);
+                    idList.add(id);
+                }
+
+                convert();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 
     @Override
@@ -919,9 +955,6 @@ public class DetailActivity extends AppCompatActivity {
     }
 
    public void convert() {
-       String pathToExternalStorage = Environment.getExternalStoragePublicDirectory((Environment.DIRECTORY_DOWNLOADS)).toString();
-       Log.v("HGH",pathToExternalStorage);
-
 
        // Here, thisActivity is the current activity
        if (ContextCompat.checkSelfPermission(this,
@@ -952,36 +985,106 @@ public class DetailActivity extends AppCompatActivity {
        }
 
 
+       final WritableWorkbook m_workbook;
+       String pathToExternalStorage = Environment.getExternalStoragePublicDirectory((Environment.DIRECTORY_DOWNLOADS)).toString();
+       Log.v("HGH",pathToExternalStorage);
 
-
-
-
-
-
-       File m_file = new File(pathToExternalStorage + "/excel2.xls");
-       WritableWorkbook m_workbook;
-
-       if(!m_file.exists())
-       {
            try
            {
 
-               m_workbook = Workbook.createWorkbook(new File(pathToExternalStorage,"excel2.xls"));
-
-
+                m_workbook = Workbook.createWorkbook(new File(pathToExternalStorage,"excel2.xls"));
                // this will create new new sheet in workbook
-               WritableSheet sheet = m_workbook.createSheet("hobbies", 0);
+               final WritableSheet sheet = m_workbook.createSheet("Absensi", 0);
+               sheet.setColumnView(0,25);
+               sheet.setColumnView(1,18);
+               sheet.addCell(new Label(0, 0, "ID"));
+               sheet.addCell(new Label(1, 0, "Nama"));
+               // Nomor absen ke-
+                for(int i=0;i<parseInt(jmlPertemuan);i++) {
 
-               // this will add label in excel sheet
-               Label label = new Label(0, 0, "ID");
-               sheet.addCell(label);
 
-               Label label2 = new Label(1, 0, "Nama");
-               sheet.addCell(label2);
-               sheet.addCell(new Label(0,1,"101"));
-               sheet.addCell(new Label(1,1,"Iqbal"));
-               m_workbook.write();
-               m_workbook.close();
+                    sheet.setColumnView(i+2, 4);
+                    sheet.addCell(new Label(2+i,0,String.valueOf(i+1)));
+                }
+
+
+                for(int i=0;i<namaList.size();i++){
+                    Log.v("idList",idList.get(i));
+
+                    sheet.addCell(new Label(0,i+1,idList.get(i)));
+                    sheet.addCell(new Label(1,i+1,namaList.get(i)));
+                }
+                DatabaseReference ref = FirebaseDatabase.getInstance().getReference("pertemuan/"+ key);
+               ref.addListenerForSingleValueEvent(new ValueEventListener() {
+                   @Override
+                   public void onDataChange(DataSnapshot dataSnapshot) {
+                       int n = 1;
+                       for(DataSnapshot postSnapshot:dataSnapshot.getChildren()) {
+
+                            for(DataSnapshot children:postSnapshot.getChildren()){
+                                int i=1;
+                                int m = children.getValue(int.class);
+                                int keys = parseInt(children.getKey());
+                                Log.v("mnight",String.valueOf(keys));
+                                i = i+ keys;
+                                Log.v("keys",String.valueOf(i));
+
+                                Log.v("childrenshotz",String.valueOf(m));
+                                if (m==1) {
+                                    try {
+                                        WritableCellFormat format = new WritableCellFormat();
+                                        format.setBackground(Colour.GREEN);
+
+                                        sheet.addCell(new Label(i, n, "✓",format));
+                                    } catch (WriteException e) {
+                                        e.printStackTrace();
+                                    }
+                                } else if(m==2) {
+                                    try {
+                                        WritableCellFormat format = new WritableCellFormat();
+                                        format.setBackground(Colour.YELLOW);
+
+
+                                        sheet.addCell(new Label(i, n, "!",format));
+                                    } catch (WriteException e) {
+                                        e.printStackTrace();
+                                    }
+                                } else if(m==3) {
+                                    try {
+                                        WritableCellFormat format = new WritableCellFormat();
+                                        format.setBackground(Colour.RED);
+
+                                        sheet.addCell(new Label(i, n, "x",format));
+                                    } catch (WriteException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+
+                            }
+                            n++;
+                       }
+                       try {
+                           m_workbook.write();
+                       } catch (IOException e) {
+                           e.printStackTrace();
+                       }
+                       try {
+                           m_workbook.close();
+                       } catch (IOException e) {
+                           e.printStackTrace();
+                       } catch (WriteException e) {
+                           e.printStackTrace();
+                       }
+                   }
+
+                   @Override
+                   public void onCancelled(DatabaseError databaseError) {
+
+                   }
+
+               });
+
+
                Toast.makeText(DetailActivity.this,"Done",Toast.LENGTH_LONG).show();
 
            }
@@ -993,7 +1096,7 @@ public class DetailActivity extends AppCompatActivity {
            {
 
            }
-       }
+
 
 //       HSSFWorkbook workbook = new HSSFWorkbook();
 //       HSSFSheet sheet = workbook.createSheet("1");
