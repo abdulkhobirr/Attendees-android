@@ -131,8 +131,10 @@ public class DetailActivity extends AppCompatActivity {
          refPertemuan.addValueEventListener(new ValueEventListener() {
              @Override
              public void onDataChange(DataSnapshot dataSnapshot) {
+                 if(dataSnapshot.exists()) {
                      pertemuanKe = dataSnapshot.getValue().toString();
-                     pertemuanKeInt = parseInt( pertemuanKe );
+                     pertemuanKeInt = parseInt(pertemuanKe);
+                 }
              }
 
              @Override
@@ -144,7 +146,9 @@ public class DetailActivity extends AppCompatActivity {
         refPertemuan.getParent().child("jmlPertemuan").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                jmlPertemuan = dataSnapshot.getValue().toString();
+                if(dataSnapshot.exists()) {
+                    jmlPertemuan = dataSnapshot.getValue().toString();
+                }
             }
 
             @Override
