@@ -9,6 +9,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.NonNull;
@@ -45,7 +46,6 @@ import com.example.iqbalzauqul.attendees.Manifest;
 import com.example.iqbalzauqul.attendees.Models.PesertaList;
 import com.example.iqbalzauqul.attendees.R;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
-import com.github.wnameless.json.flattener.JsonFlattener;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
@@ -73,6 +73,8 @@ import java.util.Map;
 import jxl.Cell;
 import jxl.CellView;
 import jxl.Workbook;
+import jxl.format.Border;
+import jxl.format.BorderLineStyle;
 import jxl.format.Colour;
 import jxl.write.Label;
 import jxl.write.WritableCellFormat;
@@ -227,7 +229,11 @@ public class DetailActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                absenMode();
+                if (recyclerView.getAdapter().getItemCount() == 0) {
+                    Toast.makeText(DetailActivity.this,"Belum ada peserta",Toast.LENGTH_LONG);
+                } else {
+                    absenMode();
+                }
             }
         });
 
@@ -375,7 +381,13 @@ public class DetailActivity extends AppCompatActivity {
                     progressDialog.setMessage("Menghapus Peserta");
                     viewHolder.setNomorIdentitas(model.getNomorIdentitas());
                     viewHolder.setNama(model.getNama());
-                    viewHolder.setAvatar(getApplicationContext(), model.getAvatar());
+                    if (model.getAvatar() == null) {
+
+                        viewHolder.setAvatar(getApplicationContext(),null);
+                    } else {
+                        viewHolder.setAvatar(getApplicationContext(), model.getAvatar());
+
+                    }
                     final String kode = getRef(position).getKey();
                     Log.v("codes",kode);
                     int i = recyclerView.getAdapter().getItemCount();
@@ -422,7 +434,7 @@ public class DetailActivity extends AppCompatActivity {
 
                                 builder1.setCancelable(true);
                                 builder1.setTitle(model.getNama());
-                                builder1.setIcon(R.drawable.defaultava);
+                                builder1.setIcon(R.drawable.ava_circle);
                                 final AlertDialog b = builder1.create();
 
                                 builder1.setItems(menu, new DialogInterface.OnClickListener() {
@@ -697,7 +709,11 @@ public class DetailActivity extends AppCompatActivity {
 
         public void setAvatar(Context ctx, String avatar) {
             ImageView imageAvatar = mView.findViewById(R.id.avatar_imageview);
-            Picasso.with(ctx).load(avatar).into(imageAvatar);
+            if (avatar==null) {
+                imageAvatar.setImageResource(R.drawable.ava_circle);
+            } else {
+                Picasso.with(ctx).load(avatar).into(imageAvatar);
+            }
         }
 
         private void setPresentase(final int presentase, final int position, ArrayList<Boolean> animated) {
@@ -1001,22 +1017,28 @@ public class DetailActivity extends AppCompatActivity {
                final WritableSheet sheet = m_workbook.createSheet("Absensi", 0);
                sheet.setColumnView(0,25);
                sheet.setColumnView(1,18);
-               sheet.addCell(new Label(0, 0, "ID"));
-               sheet.addCell(new Label(1, 0, "Nama"));
+               WritableCellFormat format = new WritableCellFormat();
+
+               format.setBorder(Border.ALL, BorderLineStyle.THIN);
+               sheet.addCell(new Label(0, 0, "ID",format));
+               sheet.addCell(new Label(1, 0, "Nama",format));
                // Nomor absen ke-
                 for(int i=0;i<parseInt(jmlPertemuan);i++) {
 
 
+//                    format.setBorder(Border.ALL, BorderLineStyle.THIN);
                     sheet.setColumnView(i+2, 4);
-                    sheet.addCell(new Label(2+i,0,String.valueOf(i+1)));
+                    sheet.addCell(new Label(2+i,0,String.valueOf(i+1),format));
                 }
 
 
                 for(int i=0;i<namaList.size();i++){
                     Log.v("idList",idList.get(i));
 
-                    sheet.addCell(new Label(0,i+1,idList.get(i)));
-                    sheet.addCell(new Label(1,i+1,namaList.get(i)));
+//                    format.setBorder(Border.ALL, BorderLineStyle.THIN);
+
+                    sheet.addCell(new Label(0,i+1,idList.get(i),format));
+                    sheet.addCell(new Label(1,i+1,namaList.get(i),format));
                 }
                 DatabaseReference ref = FirebaseDatabase.getInstance().getReference("pertemuan/"+ key);
                ref.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -1038,6 +1060,7 @@ public class DetailActivity extends AppCompatActivity {
                                     try {
                                         WritableCellFormat format = new WritableCellFormat();
                                         format.setBackground(Colour.GREEN);
+                                        format.setBorder(Border.ALL, BorderLineStyle.THIN);
 
                                         sheet.addCell(new Label(i, n, "✓",format));
                                     } catch (WriteException e) {
@@ -1047,6 +1070,7 @@ public class DetailActivity extends AppCompatActivity {
                                     try {
                                         WritableCellFormat format = new WritableCellFormat();
                                         format.setBackground(Colour.YELLOW);
+                                        format.setBorder(Border.ALL, BorderLineStyle.THIN);
 
 
                                         sheet.addCell(new Label(i, n, "!",format));
@@ -1057,6 +1081,7 @@ public class DetailActivity extends AppCompatActivity {
                                     try {
                                         WritableCellFormat format = new WritableCellFormat();
                                         format.setBackground(Colour.RED);
+                                        format.setBorder(Border.ALL, BorderLineStyle.THIN);
 
                                         sheet.addCell(new Label(i, n, "x",format));
                                     } catch (WriteException e) {

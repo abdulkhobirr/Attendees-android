@@ -237,7 +237,7 @@ public class MainActivity extends AppCompatActivity
 
                         builder1.setCancelable(true);
                         builder1.setTitle(model.getnama())
-                        .setIcon(R.drawable.kelass);
+                        .setIcon(R.drawable.header);
                         final AlertDialog b = builder1.create();
 
                         builder1.setItems(menu, new DialogInterface.OnClickListener() {

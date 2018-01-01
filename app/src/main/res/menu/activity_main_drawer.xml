@@ -6,11 +6,11 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_pengabsen"
-            android:icon="@mipmap/ic_kelasan"
+            android:icon="@drawable/ic_pengabsen"
             android:title="Pengabsen" />
         <item
             android:id="@+id/nav_peserta"
-            android:icon="@mipmap/ic_peserta"
+            android:icon="@drawable/ic_peserta"
             android:title="Peserta" />
 
     </group>
@@ -20,7 +20,7 @@
 
             <item
                 android:id="@+id/nav_send"
-                android:icon="@mipmap/log"
+                android:icon="@drawable/ic_power"
                 android:title="Logout" />
         </menu>
     </item>

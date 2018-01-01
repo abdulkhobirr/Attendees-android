@@ -79,11 +79,10 @@ public class AddPesertaActivity extends AppCompatActivity {
 
     private void addPeserta(final String nama, final String id) throws FileNotFoundException {
         if(imageUri !=null){
-            addPesertaMethod( nama,id );
+            addPesertaMethod(nama,id);
 
         }else{
-            imageUri = Uri.parse("android.resource://com.example.iqbalzauqul.attendees/drawable/defaultava");
-            InputStream stream = getContentResolver().openInputStream(imageUri);
+            imageUri = null;
 
             addPesertaMethod(nama,id );
         }
@@ -100,6 +99,18 @@ public class AddPesertaActivity extends AppCompatActivity {
 
         storageReference = FirebaseStorage.getInstance().getReference();
         final StorageReference filePath = storageReference.child("Avatar").child(id);
+        if (imageUri==null) {
+            datRef.child("nama").setValue(nama);
+            datRef.child("nomorIdentitas").setValue(id);
+            datRef.child("progress").setValue(0);
+            progressDialog.dismiss();
+
+
+            Intent returnIntent = new Intent();
+            returnIntent.putExtra("result", true);
+            setResult(Activity.RESULT_OK, returnIntent);
+            finish();
+        } else {
 
         filePath.putFile(imageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
@@ -108,7 +119,7 @@ public class AddPesertaActivity extends AppCompatActivity {
                 datRef.child("nama").setValue(nama);
                 datRef.child("nomorIdentitas").setValue(id);
                 datRef.child("avatar").setValue(downloadUrl.toString());
-                datRef.child("progress").setValue(100);
+                datRef.child("progress").setValue(0);
                 progressDialog.dismiss();
 
 
@@ -127,6 +138,8 @@ public class AddPesertaActivity extends AppCompatActivity {
                         Toast.makeText(AddPesertaActivity.this, "Terjadi Kesalahan" + e, Toast.LENGTH_SHORT).show();
                     }
                 });
+        }
+
     }
 
     @Override
