@@ -64,7 +64,6 @@ import com.squareup.picasso.Picasso;
 
 import java.io.File;
 
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -230,7 +229,7 @@ public class DetailActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (recyclerView.getAdapter().getItemCount() == 0) {
-                    Toast.makeText(DetailActivity.this,"Belum ada peserta",Toast.LENGTH_LONG);
+                    Toast.makeText(DetailActivity.this,"Belum ada peserta",Toast.LENGTH_LONG).show();
                 } else {
                     absenMode();
                 }
@@ -1011,8 +1010,14 @@ public class DetailActivity extends AppCompatActivity {
 
            try
            {
-
-                m_workbook = Workbook.createWorkbook(new File(pathToExternalStorage,"excel2.xls"));
+               String namakelas = getIntent().getStringExtra("nama");
+               File export=new File(pathToExternalStorage,"Absensi Kelas - "+namakelas+".xls");
+               int cek = 1;
+               while(export.exists()){
+                   export = new File(pathToExternalStorage, "Absensi Kelas - "+namakelas+ "(" + cek + ")" + ".xls");
+                   cek++;
+               }
+               m_workbook = Workbook.createWorkbook(export);
                // this will create new new sheet in workbook
                final WritableSheet sheet = m_workbook.createSheet("Absensi", 0);
                sheet.setColumnView(0,25);
@@ -1113,9 +1118,8 @@ public class DetailActivity extends AppCompatActivity {
 
                });
 
-
+               namaList.clear();
                Toast.makeText(DetailActivity.this,"Done",Toast.LENGTH_LONG).show();
-
            }
            catch (Exception e) {
                Toast.makeText(DetailActivity.this,String.valueOf(e.getMessage()),Toast.LENGTH_LONG).show();
