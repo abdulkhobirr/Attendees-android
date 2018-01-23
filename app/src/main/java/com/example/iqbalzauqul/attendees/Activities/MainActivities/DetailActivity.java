@@ -91,7 +91,7 @@ public class DetailActivity extends AppCompatActivity {
     private ArrayList<Integer> selectedToggle = new ArrayList<Integer>();
     private ArrayList<String> pesertaArray = new ArrayList<String>();
 
-
+    Boolean pesertaBool = false;
     Boolean absenFinished = false;
     Menu collapsedMenu;
     //    private Query mQuery;
@@ -194,9 +194,11 @@ public class DetailActivity extends AppCompatActivity {
                 if (dataSnapshot.hasChildren() == true) {
 
                     fab.setVisibility(View.VISIBLE);
+                    pesertaBool = true;
 
                 } else {
                     fab.setVisibility(View.GONE);
+                    pesertaBool = false;
                 }
             }
 
@@ -382,11 +384,13 @@ public class DetailActivity extends AppCompatActivity {
         if (collapsedMenu != null
                 && (!appBarExpanded)) {
             int size = collapsedMenu.size();
+            if (pesertaBool == true) {
+                //collapsed
+                collapsedMenu.add("Add")
+                        .setIcon(R.drawable.ic_create_black_24dp)
+                        .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+            }
 
-            //collapsed
-            collapsedMenu.add("Add")
-                    .setIcon(R.drawable.ic_create_black_24dp)
-                    .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
         } else {
             //expandedm
         }
