@@ -165,6 +165,11 @@ public class DetailActivity extends AppCompatActivity {
         loadBitmap(urlFoto);
         fetchView();
         fetchRecyclerView();
+        pesertaListener();
+
+
+
+
 
 
 
@@ -179,6 +184,31 @@ public class DetailActivity extends AppCompatActivity {
 
 
     }
+
+    private void pesertaListener() {
+        mDatabaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                FloatingActionButton fab = findViewById(R.id.avatar);
+
+                if (dataSnapshot.hasChildren() == true) {
+
+                    fab.setVisibility(View.VISIBLE);
+
+                } else {
+                    fab.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+
+    }
+
     public void loadBitmap(final String url) {
 
         if (loadtarget == null) loadtarget = new com.squareup.picasso.Target() {
@@ -217,6 +247,8 @@ public class DetailActivity extends AppCompatActivity {
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(this, linearLayoutManager.getOrientation());
         dividerItemDecoration.setDrawable(getDrawable(R.drawable.drawable_divider));
         recyclerView.addItemDecoration(dividerItemDecoration);
+        FloatingActionButton fab = findViewById(R.id.avatar);
+
 
     }
 
@@ -225,10 +257,12 @@ public class DetailActivity extends AppCompatActivity {
         Toolbar toolbar =  findViewById(R.id.anim_toolbar);
 
         FloatingActionButton fab = findViewById(R.id.avatar);
-        fab.setOnClickListener(new View.OnClickListener() {
+
+            fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (recyclerView.getAdapter().getItemCount() == 0) {
+                if (recyclerView.getAdapter().getItemCount() == 0)
+                {
                     Toast.makeText(DetailActivity.this,"Belum ada peserta",Toast.LENGTH_LONG).show();
                 } else {
                     absenMode();
@@ -516,6 +550,7 @@ public class DetailActivity extends AppCompatActivity {
                     if (absenFinished){
                         absen();
                     }
+
                 }
 
                 @Override
@@ -598,7 +633,16 @@ public class DetailActivity extends AppCompatActivity {
                         }
                     }
                 }
+
             });
+        FloatingActionButton fab = findViewById(R.id.avatar);
+
+
+        if (recyclerView.getAdapter().getItemCount() == 0) {
+            fab.setVisibility(View.GONE);
+        } else {
+            fab.setVisibility(View.VISIBLE);
+        }
 
 
         super.onResume();
@@ -648,7 +692,6 @@ public class DetailActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
-
                 for(DataSnapshot children:dataSnapshot.getChildren()){
                     String nama = children.child("nama").getValue().toString();
                     Log.v("nama",nama);
@@ -673,11 +716,15 @@ public class DetailActivity extends AppCompatActivity {
             if (resultCode == Activity.RESULT_OK) {
                 Toast.makeText(this,"Berhasil ditambahkan.",Toast.LENGTH_SHORT).show();
                 recyclerView.getAdapter().notifyDataSetChanged();
+
+
+
             }
             if (resultCode == Activity.RESULT_CANCELED) {
                 //Write your code if there's no result
             }
         }
+
 
     }
 
@@ -960,6 +1007,7 @@ public class DetailActivity extends AppCompatActivity {
         super.onBackPressed();
 
     }
+
 
 
 
